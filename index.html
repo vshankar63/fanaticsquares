@@ -476,7 +476,7 @@ tr:last-child td{border-bottom:none;}
           <td style="color:var(--green);font-weight:700;">$820K</td>
         </tr>
         <tr style="background:rgba(224,31,61,0.04);">
-          <td class="font-700">Base Case</td>
+          <td class="font-700">Baseline</td>
           <td>3% of 16.3M</td>
           <td>~490K players</td>
           <td>$24.5M</td>
@@ -571,8 +571,7 @@ tr:last-child td{border-bottom:none;}
     <h2>Commission</h2>
     <p class="text-sm lh text-muted">10% taken from total pot before payout distribution. Automatically deducted   no organiser involvement, no disputes.</p>
     <div class="revenue-example">
-      100 squares × $10 = $1,000 pot &nbsp;→&nbsp; $100 commission &nbsp;→&nbsp; $900 distributed<br>
-      Base case: 490K players × $50 avg spend × 10% commission = <span class="revenue-highlight">$2.45M Super Bowl commission</span>
+      Baseline: 490K players × $50 avg spend × 10% commission = <span class="revenue-highlight">$2.45M Super Bowl commission</span>
     </div>
   </div>
 
@@ -643,21 +642,21 @@ tr:last-child td{border-bottom:none;}
         <div class="roadmap-phase-label">Phase 1</div>
         <div class="roadmap-phase-date" style="color:var(--red);font-size:11px;font-weight:600;">Feb 2027</div>
         <h3>Super Bowl Squares</h3>
-        <p>Validate mechanic, commission model, Wallet integration. Target: 50,000 games, 500,000 players.</p>
+        <p>Validate mechanic, commission model, Wallet integration.</p>
       </div>
       <div class="roadmap-phase future">
         <div class="roadmap-dot future"></div>
         <div class="roadmap-phase-label">Phase 2</div>
         <div class="roadmap-phase-date" style="font-size:11px;font-weight:600;color:var(--muted);">Mar 2027</div>
         <h3>March Madness Grid</h3>
-        <p>Adapt grid for tournament bracket outcomes. Target: 200,000 games.</p>
+        <p>Adapt grid for tournament bracket outcomes.</p>
       </div>
       <div class="roadmap-phase future">
         <div class="roadmap-dot future"></div>
         <div class="roadmap-phase-label">Phase 3</div>
         <div class="roadmap-phase-date" style="font-size:11px;font-weight:600;color:var(--muted);">Sep 2027</div>
         <h3>NFL Season Pass</h3>
-        <p>Weekly squares every NFL game. Subscription organiser tier ($4.99/month unlimited games). Target: 1M monthly organisers.</p>
+        <p>Weekly squares every NFL game. Subscription organiser tier ($4.99/month unlimited games).</p>
       </div>
       <div class="roadmap-phase future">
         <div class="roadmap-dot future"></div>
@@ -669,7 +668,7 @@ tr:last-child td{border-bottom:none;}
     </div>
   </div>
 
-  <div class="card-label" style="padding-left:2px;">Sport Coverage Expansion</div>
+  <div class="card-label" style="padding-left:2px;">Expanding to Other Markets</div>
   <div class="sport-cards">
     <div class="sport-card"><div class="sport-icon">🏈</div><div><h4>NFL</h4><p>Weekly squares all season long</p></div></div>
     <div class="sport-card"><div class="sport-icon">🏀</div><div><h4>NBA</h4><p>Finals grid, playoff bracket pools</p></div></div>
@@ -933,14 +932,16 @@ tr:last-child td{border-bottom:none;}
     </div>
     <div class="buy-panel">
       <h3>Your Selection</h3>
-      <div id="buy-selected-count" style="font-size:28px;font-weight:800;color:var(--blue);margin-bottom:4px;">3 squares selected</div>
-      <div id="buy-hint" style="font-size:12px;color:var(--muted);margin-bottom:16px;">Click squares to add or remove</div>
+      <div id="buy-selected-count" style="font-size:28px;font-weight:800;color:var(--blue);margin-bottom:4px;">0 squares selected</div>
+      <div id="buy-hint" style="font-size:12px;color:var(--muted);margin-bottom:16px;">Click on empty squares that you would like to purchase</div>
+      <div style="background:rgba(0,194,122,0.08);border:1px solid rgba(0,194,122,0.2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:16px;font-size:12px;color:var(--green);">9/10 other players are locked in</div>
       <div class="buy-detail-row"><span class="buy-detail-label">Price per square</span><span class="buy-detail-value">$10</span></div>
-      <div class="buy-detail-row" id="buy-total-row"><span class="buy-detail-label">Total</span><span class="buy-detail-value" style="color:var(--green);">$30</span></div>
+      <div class="buy-detail-row" id="buy-total-row"><span class="buy-detail-label">Total</span><span class="buy-detail-value" style="color:var(--green);">$0</span></div>
       <div class="buy-detail-row"><span class="buy-detail-label">From</span><span class="buy-detail-value">Fanatics Wallet</span></div>
       <div class="buy-detail-row"><span class="buy-detail-label">Balance</span><span class="buy-detail-value">$247.50</span></div>
-      <div class="buy-detail-row" id="buy-after-row"><span class="buy-detail-label">After purchase</span><span class="buy-detail-value text-muted">$217.50</span></div>
-      <button class="btn btn-red mt-16" style="width:100%;padding:12px;" id="buy-confirm-btn">Confirm Purchase</button>
+      <div class="buy-detail-row" id="buy-after-row"><span class="buy-detail-label">After purchase</span><span class="buy-detail-value text-muted">$247.50</span></div>
+      <button class="btn btn-red mt-16" style="width:100%;padding:12px;" id="buy-confirm-btn" onclick="confirmPurchase()">Confirm Purchase</button>
+      <div id="buy-locked-msg" style="display:none;margin-top:12px;background:rgba(0,194,122,0.1);border:1px solid rgba(0,194,122,0.3);border-radius:var(--radius-sm);padding:12px;text-align:center;font-size:13px;font-weight:700;color:var(--green);">✓ You are locked in!</div>
       <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;">Charged from Fanatics Wallet instantly</div>
     </div>
   </div>
@@ -1150,8 +1151,9 @@ function updateTeamNames() {
   document.querySelectorAll('.dyn-team2').forEach(el => el.textContent = team2Name);
 }
 
-// Buy screen: pre-select 3 of VS's available squares
-let buySelected = new Set([19, 28, 46]);
+// Buy screen: nothing pre-selected
+let buySelected = new Set();
+let buyLocked = false;
 
 // Draw screen state
 let numbersDrawn = false;
@@ -1336,6 +1338,7 @@ function renderBuyGrid() {
 }
 
 function toggleBuyCell(idx, cell) {
+  if (buyLocked) return;
   if (buySelected.has(idx)) {
     buySelected.delete(idx);
     cell.style.background = '#1c1f27';
@@ -1364,6 +1367,14 @@ function updateBuyPanel() {
   document.getElementById('buy-selected-count').textContent = n + (n === 1 ? ' square selected' : ' squares selected');
   document.getElementById('buy-total-row').querySelector('.buy-detail-value').textContent = '$' + total.toFixed(2);
   document.getElementById('buy-after-row').querySelector('.buy-detail-value').textContent = '$' + after.toFixed(2);
+}
+
+function confirmPurchase() {
+  if (buySelected.size === 0) return;
+  buyLocked = true;
+  document.getElementById('buy-confirm-btn').disabled = true;
+  document.getElementById('buy-confirm-btn').style.opacity = '0.5';
+  document.getElementById('buy-locked-msg').style.display = 'block';
 }
 
 // ============================================================
