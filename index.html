@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fanatics Markets   Squares</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0c0d10;
+  --surface:#14161c;
+  --elevated:#1c1f27;
+  --border:#2a2d37;
+  --red:#e01f3d;
+  --text:#f0f2f5;
+  --muted:#7a8094;
+  --green:#00c27a;
+  --yellow:#f5a623;
+  --blue:#3b82f6;
+  --radius:10px;
+  --radius-sm:6px;
+  --radius-pill:20px;
+  --shadow:0 1px 3px rgba(0,0,0,0.4);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:0;}
+.nav-left{display:flex;align-items:center;gap:10px;min-width:220px;}
+.logo-mark{width:30px;height:30px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff;flex-shrink:0;}
+.nav-brand{font-weight:700;font-size:14px;color:var(--text);letter-spacing:0.05em;}
+.beta-pill{background:rgba(122,128,148,0.2);color:var(--muted);font-size:10px;font-weight:600;padding:2px 8px;border-radius:var(--radius-pill);letter-spacing:0.06em;}
+.nav-center{flex:1;display:flex;justify-content:center;gap:0;}
+.nav-tab{padding:0 20px;height:56px;display:flex;align-items:center;font-size:14px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
+.nav-tab:hover{color:var(--text);}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--red);}
+.nav-right{display:flex;align-items:center;gap:12px;min-width:220px;justify-content:flex-end;}
+.balance{font-weight:600;font-size:14px;color:var(--text);}
+.btn-deposit{background:var(--red);color:#fff;border:none;padding:6px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.avatar{width:32px;height:32px;background:var(--elevated);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);border:1px solid var(--border);}
+
+/* LAYOUT */
+.app-body{display:flex;padding-top:56px;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{position:fixed;left:0;top:56px;bottom:0;width:220px;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:16px 0;}
+.sidebar-section-label{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.1em;padding:0 16px 8px;text-transform:uppercase;}
+.sidebar-divider{height:1px;background:var(--border);margin:12px 0;}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-left:2px solid transparent;transition:all 0.15s;user-select:none;}
+.sidebar-item:hover{color:var(--text);background:rgba(255,255,255,0.04);}
+.sidebar-item.active{color:var(--red);background:rgba(224,31,61,0.08);border-left-color:var(--red);}
+.sidebar-item .icon{font-size:14px;width:18px;text-align:center;}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;padding:32px;min-height:calc(100vh - 56px);}
+
+/* SCREEN */
+.screen{display:none;animation:fadeIn 0.2s ease;}
+.screen.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* TYPOGRAPHY */
+.screen-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.screen-subtitle{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.5;}
+.breadcrumb{font-size:12px;color:var(--muted);margin-bottom:16px;}
+.breadcrumb span{color:var(--text);}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.card-elevated{background:var(--elevated);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+.card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;}
+.card-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;}
+
+/* GRID UTILS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;}
+
+/* STAT CARDS */
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;}
+.stat-number{font-size:36px;font-weight:800;color:var(--text);line-height:1;}
+.stat-label{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4;}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;}
+th{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+td{font-size:13px;color:var(--text);padding:10px 12px;border-bottom:1px solid rgba(42,45,55,0.5);}
+tr:last-child td{border-bottom:none;}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+
+/* PILLS / BADGES */
+.pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:var(--radius-pill);font-size:11px;font-weight:600;}
+.pill-green{background:rgba(0,194,122,0.15);color:var(--green);}
+.pill-red{background:rgba(224,31,61,0.15);color:var(--red);}
+.pill-yellow{background:rgba(245,166,35,0.15);color:var(--yellow);}
+.pill-blue{background:rgba(59,130,246,0.15);color:var(--blue);}
+.pill-muted{background:rgba(122,128,148,0.15);color:var(--muted);}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;border:none;transition:all 0.15s;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{background:#c91a34;}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border);}
+.btn-outline:hover{background:rgba(255,255,255,0.04);}
+.btn-green{background:var(--green);color:#fff;}
+.btn-sm{padding:7px 14px;font-size:13px;}
+
+/* PROBLEM SCREEN */
+.problem-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;}
+.problem-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+.problem-icon{font-size:28px;margin-bottom:12px;}
+.problem-card h3{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.problem-card p{font-size:13px;color:var(--muted);line-height:1.6;}
+.comparison-table{margin-bottom:24px;}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:var(--radius);padding:20px;margin-top:24px;}
+.callout-quote{font-size:14px;color:var(--text);line-height:1.7;font-style:italic;margin-bottom:8px;}
+.callout-source{font-size:12px;color:var(--muted);}
+
+/* OPPORTUNITY */
+.market-map{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:24px 0;}
+.market-node{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;}
+.market-node-dot{width:12px;height:12px;border-radius:50%;margin:0 auto 12px;}
+.market-node h3{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.market-node p{font-size:13px;color:var(--muted);line-height:1.5;}
+
+/* DISCOVERY */
+.discovery-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+.discovery-col h3{font-size:13px;font-weight:700;color:var(--text);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.pain-item{background:var(--elevated);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;font-size:13px;color:var(--muted);line-height:1.5;border-left:2px solid var(--border);}
+.why-now-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
+.why-now-dot{width:6px;height:6px;border-radius:50%;background:var(--green);margin-top:5px;flex-shrink:0;}
+.why-now-text{font-size:13px;color:var(--muted);line-height:1.5;}
+
+/* COMMERCIAL */
+.primary-revenue{background:var(--surface);border:2px solid var(--red);border-radius:var(--radius);padding:24px;margin-bottom:16px;}
+.primary-revenue-label{font-size:10px;font-weight:700;color:var(--red);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;}
+.primary-revenue h2{font-size:18px;font-weight:700;color:var(--text);margin-bottom:12px;}
+.revenue-example{background:var(--elevated);border-radius:var(--radius-sm);padding:12px;margin-top:12px;font-size:13px;color:var(--muted);line-height:1.6;}
+.revenue-highlight{color:var(--green);font-weight:700;}
+.prize-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;}
+.prize-cell{background:var(--elevated);border-radius:var(--radius-sm);padding:12px;text-align:center;}
+.prize-cell-label{font-size:11px;color:var(--muted);margin-bottom:4px;}
+.prize-cell-pct{font-size:20px;font-weight:800;color:var(--text);}
+.prize-cell-amt{font-size:12px;color:var(--green);margin-top:2px;}
+
+/* APPLICATIONS */
+.roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-bottom:28px;position:relative;}
+.roadmap::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:2px;background:var(--border);}
+.roadmap-phase{text-align:center;position:relative;padding:0 8px;}
+.roadmap-dot{width:16px;height:16px;border-radius:50%;background:var(--red);margin:20px auto 16px;border:3px solid var(--bg);box-shadow:0 0 0 2px var(--red);position:relative;z-index:1;}
+.roadmap-dot.future{background:var(--border);box-shadow:0 0 0 2px var(--border);}
+.roadmap-phase-label{font-size:10px;font-weight:700;color:var(--red);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;}
+.roadmap-phase.future .roadmap-phase-label{color:var(--muted);}
+.roadmap-phase h3{font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.roadmap-phase p{font-size:12px;color:var(--muted);line-height:1.5;}
+.roadmap-phase-date{font-size:11px;color:var(--muted);margin-bottom:4px;}
+.sport-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.sport-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:12px;}
+.sport-icon{font-size:22px;}
+.sport-card h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.sport-card p{font-size:12px;color:var(--muted);}
+
+/* METRICS */
+.north-star{background:var(--surface);border:2px solid var(--blue);border-radius:var(--radius);padding:24px;margin-bottom:24px;text-align:center;}
+.north-star-label{font-size:10px;font-weight:700;color:var(--blue);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;}
+.north-star h2{font-size:22px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.north-star p{font-size:13px;color:var(--muted);line-height:1.5;}
+.metric-tier{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+.metric-tier h3{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.metric-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(42,45,55,0.5);}
+.metric-row:last-child{border-bottom:none;}
+.metric-name{font-size:13px;color:var(--muted);}
+.metric-target{font-size:13px;font-weight:600;color:var(--green);}
+.guardrail-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;}
+.guardrail-icon{color:var(--yellow);font-size:12px;margin-top:2px;}
+.guardrail-text{font-size:13px;color:var(--muted);line-height:1.5;}
+
+/* SQUARES GRID */
+.squares-grid-container{overflow-x:auto;margin-top:20px;}
+.squares-grid-wrap{display:inline-block;}
+.squares-header-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;text-align:center;padding:6px;margin-bottom:4px;}
+.sq-row{display:flex;}
+.sq-corner{width:56px;height:56px;flex-shrink:0;}
+.sq-col-header{width:56px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:var(--text);background:var(--elevated);border:1px solid var(--border);}
+.sq-col-header.unrevealed{color:var(--muted);font-size:18px;}
+.sq-row-header{width:56px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:var(--text);background:var(--elevated);border:1px solid var(--border);}
+.sq-row-header.unrevealed{color:var(--muted);font-size:18px;}
+.sq-cell{width:56px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:1px solid var(--border);cursor:pointer;transition:all 0.1s;user-select:none;position:relative;}
+.sq-cell.empty{background:var(--elevated);color:var(--muted);}
+.sq-cell.empty:hover{background:rgba(59,130,246,0.12);border-color:var(--blue);}
+.sq-cell.claimed{background:rgba(0,194,122,0.12);color:var(--green);border-color:rgba(0,194,122,0.25);}
+.sq-cell.selected{background:rgba(59,130,246,0.2);border-color:var(--blue);color:var(--blue);}
+.sq-cell.winner-q3{background:rgba(245,166,35,0.2);border-color:var(--yellow);animation:pulseWin 1.5s ease-in-out infinite;}
+.sq-cell.winner-done{background:rgba(0,194,122,0.18);border-color:var(--green);}
+@keyframes pulseWin{0%,100%{box-shadow:0 0 0 0 rgba(245,166,35,0.4);}50%{box-shadow:0 0 0 6px rgba(245,166,35,0);}}
+
+/* TEAM HEADERS */
+.team-header-chiefs{font-size:10px;font-weight:700;color:#e31837;letter-spacing:0.08em;text-transform:uppercase;}
+.team-header-eagles{font-size:10px;font-weight:700;color:#004c54;letter-spacing:0.08em;text-transform:uppercase;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);}
+
+/* STATUS BARS */
+.status-bar{background:var(--elevated);border:1px solid var(--border);border-radius:var(--radius);padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.status-bar-item{font-size:13px;color:var(--muted);}
+.status-bar-item strong{color:var(--text);}
+.status-bar-divider{width:1px;height:16px;background:var(--border);}
+
+/* CREATE GAME */
+.create-layout{display:grid;grid-template-columns:1fr 340px;gap:24px;}
+.form-group{margin-bottom:18px;}
+.form-label{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:0.07em;}
+.form-input{width:100%;background:var(--elevated);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color 0.15s;}
+.form-input:focus{border-color:var(--blue);}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237a8094' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+.team-row{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;}
+.team-vs{font-size:12px;font-weight:700;color:var(--muted);text-align:center;}
+.team-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;}
+.split-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.split-input-group{text-align:center;}
+.split-label{font-size:10px;color:var(--muted);margin-bottom:4px;}
+.split-input{width:100%;background:var(--elevated);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px;font-size:14px;font-weight:700;color:var(--text);text-align:center;font-family:'Inter',sans-serif;outline:none;}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(42,45,55,0.5);}
+.summary-row:last-child{border-bottom:none;}
+.summary-label{font-size:13px;color:var(--muted);}
+.summary-value{font-size:13px;font-weight:600;color:var(--text);}
+.summary-value.green{color:var(--green);}
+.summary-value.red{color:var(--red);}
+.summary-divider{height:1px;background:var(--border);margin:8px 0;}
+
+/* LOBBY */
+.invite-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px;}
+.invite-row{display:flex;gap:12px;align-items:center;margin-bottom:16px;}
+.share-link{flex:1;background:var(--elevated);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:var(--muted);font-family:monospace;}
+.friends-list{display:flex;flex-direction:column;gap:8px;}
+.friend-row{display:flex;align-items:center;gap:12px;padding:10px;background:var(--elevated);border-radius:var(--radius-sm);}
+.friend-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.friend-name{flex:1;font-size:13px;font-weight:500;color:var(--text);}
+.friend-squares{font-size:12px;color:var(--muted);margin-right:8px;}
+.legend{display:flex;gap:20px;margin-top:16px;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+.legend-box{width:14px;height:14px;border-radius:2px;}
+.players-below{margin-top:24px;}
+.players-below h3{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.07em;}
+.player-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.player-chip{display:flex;align-items:center;gap:8px;background:var(--elevated);border:1px solid var(--border);border-radius:var(--radius-pill);padding:6px 12px;}
+.player-chip-avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
+.player-chip-name{font-size:12px;color:var(--text);}
+.player-chip-count{font-size:12px;color:var(--muted);}
+
+/* BUY SQUARES */
+.buy-layout{display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start;}
+.buy-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:sticky;top:80px;}
+.buy-panel h3{font-size:14px;font-weight:700;color:var(--text);margin-bottom:16px;}
+.buy-detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(42,45,55,0.5);}
+.buy-detail-row:last-of-type{border-bottom:none;}
+.buy-detail-label{font-size:13px;color:var(--muted);}
+.buy-detail-value{font-size:13px;font-weight:600;color:var(--text);}
+
+/* LOCK & DRAW */
+.draw-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:20px;text-align:center;}
+.draw-card h2{font-size:18px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.draw-card p{font-size:13px;color:var(--muted);line-height:1.6;max-width:480px;margin:0 auto 20px;}
+.success-banner{background:rgba(0,194,122,0.1);border:1px solid rgba(0,194,122,0.3);border-radius:var(--radius);padding:14px 20px;display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.success-banner-text{font-size:14px;font-weight:600;color:var(--green);}
+
+/* LIVE SCORING */
+.score-entry{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.score-team{font-size:13px;font-weight:600;color:var(--text);}
+.score-input{background:var(--elevated);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-size:20px;font-weight:800;color:var(--text);width:70px;text-align:center;font-family:'Inter',sans-serif;outline:none;}
+.score-separator{font-size:18px;font-weight:700;color:var(--muted);}
+.quarter-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.quarter-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
+.quarter-card.done{border-color:rgba(0,194,122,0.3);background:rgba(0,194,122,0.05);}
+.quarter-card.live{border-color:rgba(224,31,61,0.4);background:rgba(224,31,61,0.05);animation:pulseLive 2s ease-in-out infinite;}
+@keyframes pulseLive{0%,100%{box-shadow:0 0 0 0 rgba(224,31,61,0.2);}50%{box-shadow:0 0 0 6px rgba(224,31,61,0);}}
+.quarter-card h4{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;}
+.quarter-score{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.quarter-digits{font-size:12px;color:var(--muted);margin-bottom:8px;}
+.quarter-winner{font-size:12px;font-weight:600;color:var(--green);}
+.quarter-winner.live{color:var(--yellow);}
+.quarter-status{font-size:11px;margin-top:6px;}
+.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-right:4px;animation:blink 1s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* PAYOUTS */
+.payout-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px;}
+.payout-card{background:rgba(0,194,122,0.07);border:1px solid rgba(0,194,122,0.25);border-radius:var(--radius);padding:20px;}
+.payout-card-q{font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;}
+.payout-card-name{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.payout-card-amount{font-size:22px;font-weight:800;color:var(--green);margin-bottom:4px;}
+.payout-card-you{font-size:12px;color:var(--yellow);}
+.payout-summary{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;}
+.commission-note{font-size:12px;color:var(--muted);text-align:center;margin-top:12px;}
+.btn-row{display:flex;gap:12px;margin-top:20px;}
+
+/* PROGRESS BAR */
+.progress-bar{height:4px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:2px;background:var(--green);transition:width 0.3s;}
+
+/* MOBILE TOOLTIP */
+.sq-tooltip{display:none;position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#000;color:#fff;font-size:10px;padding:3px 6px;border-radius:3px;white-space:nowrap;z-index:10;pointer-events:none;}
+.sq-cell:hover .sq-tooltip{display:block;}
+
+/* SECTION DIVIDER */
+.section-divider{height:1px;background:var(--border);margin:24px 0;}
+
+.flex-between{display:flex;justify-content:space-between;align-items:center;}
+.text-muted{color:var(--muted);}
+.text-green{color:var(--green);}
+.text-red{color:var(--red);}
+.text-yellow{color:var(--yellow);}
+.font-bold{font-weight:700;}
+.font-700{font-weight:700;}
+.mt-4{margin-top:4px;}
+.mt-8{margin-top:8px;}
+.mt-12{margin-top:12px;}
+.mt-16{margin-top:16px;}
+.mt-20{margin-top:20px;}
+.mt-24{margin-top:24px;}
+.mb-4{margin-bottom:4px;}
+.mb-8{margin-bottom:8px;}
+.mb-12{margin-bottom:12px;}
+.mb-16{margin-bottom:16px;}
+.mb-20{margin-bottom:20px;}
+.mb-24{margin-bottom:24px;}
+.text-sm{font-size:13px;}
+.text-xs{font-size:11px;}
+.lh{line-height:1.6;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <span class="nav-brand" style="font-size:16px;font-weight:800;letter-spacing:-0.02em;">fanatics<span style="color:var(--red);">squares</span></span>
+    <span class="beta-pill">BETA</span>
+  </div>
+  <div class="nav-center">
+    <div class="nav-tab" onclick="setNavTab(this,'trending')">Trending</div>
+    <div class="nav-tab" onclick="setNavTab(this,'live')">Live</div>
+    <div class="nav-tab active" onclick="setNavTab(this,'squares')">Squares</div>
+  </div>
+  <div class="nav-right">
+    <span class="balance">$247.50</span>
+    <button class="btn-deposit">Deposit</button>
+    <div class="avatar">VS</div>
+  </div>
+</nav>
+
+<!-- BODY -->
+<div class="app-body">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-section-label">Product Pitch</div>
+  <div class="sidebar-item active" onclick="showScreen('problem',this)"><span class="icon">📋</span>Problem</div>
+  <div class="sidebar-item" onclick="showScreen('opportunity',this)"><span class="icon">📈</span>Opportunity</div>
+  <div class="sidebar-item" onclick="showScreen('commercial',this)"><span class="icon">💰</span>Commercials</div>
+  <div class="sidebar-item" onclick="showScreen('applications',this)"><span class="icon">🔭</span>Looking Further</div>
+  <div class="sidebar-item" onclick="showScreen('cost',this)"><span class="icon">🧮</span>Cost to Deliver <span style="font-size:9px;background:rgba(245,166,35,0.15);color:#f5a623;border-radius:10px;padding:1px 6px;margin-left:2px;font-weight:700;">In Progress</span></div>
+  <div class="sidebar-item" onclick="showScreen('discovery',this)"><span class="icon">🔍</span>Discovery <span style="font-size:9px;background:rgba(245,166,35,0.15);color:#f5a623;border-radius:10px;padding:1px 6px;margin-left:2px;font-weight:700;">In Progress</span></div>
+  <div class="sidebar-item" onclick="showScreen('metrics',this)"><span class="icon">📊</span>Success Metrics <span style="font-size:9px;background:rgba(245,166,35,0.15);color:#f5a623;border-radius:10px;padding:1px 6px;margin-left:2px;font-weight:700;">In Progress</span></div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section-label">Squares Demo</div>
+  <div class="sidebar-item" onclick="showScreen('create',this)"><span class="icon">➕</span>Create Game</div>
+  <div class="sidebar-item" onclick="showScreen('lobby',this)"><span class="icon">🏟️</span>Game Lobby</div>
+  <div class="sidebar-item" onclick="showScreen('buy',this)"><span class="icon">🎯</span>Buy Squares</div>
+  <div class="sidebar-item" onclick="showScreen('draw',this)"><span class="icon">🔀</span>Lock &amp; Draw</div>
+  <div class="sidebar-item" onclick="showScreen('live',this)"><span class="icon">📺</span>Live Scoring</div>
+  <div class="sidebar-item" onclick="showScreen('payouts',this)"><span class="icon">🏆</span>Payouts</div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ==================== SCREEN: PROBLEM ==================== -->
+<div id="screen-problem" class="screen active">
+  <div class="screen-title">What's the problem?</div>
+  <div class="screen-subtitle">Casual betting in physical spaces during the Super Bowl are chaotic and messy for people at the party. Squares games are fun in concept, but hard to run as the Super Bowl kicks off.</div>
+
+  <div class="problem-cards">
+    <div class="problem-card">
+      <div class="problem-icon">🧾</div>
+      <h3>Confusing Setup Leads to Distrust</h3>
+      <p>With physical gameboards, house rules being applied, all-cash transactions, and many participants, things can get messy very quickly. Disagreements over how the game is run sour what should be a fun experience.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">💸</div>
+      <h3>Payments Are Not Straightforward</h3>
+      <p>Everyone depends on the host to calculate payments and transfer via Venmo. Apps like Splitwise have solved this problem for group trips   the same logic applies here, but nobody has built it for squares.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">⏳</div>
+      <h3>Payouts Don't Come Right Away</h3>
+      <p>It's been two weeks since the party and you still haven't been paid   but you also forget to chase it. This gets awkward quickly, and often means winners just never collect.</p>
+    </div>
+  </div>
+
+  <div class="card comparison-table">
+    <div class="card-label">Today vs. With Fanatics Squares</div>
+    <table>
+      <thead>
+        <tr><th></th><th>Today</th><th style="color:var(--green);">With Fanatics Squares</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="font-700">Game setup</td><td class="text-muted">Physical paper / printed boards</td><td class="text-green">60-second setup in-app</td></tr>
+        <tr><td class="font-700">Payments</td><td class="text-muted">Physical tracking or Excel + Venmo / cash</td><td class="text-green">Fanatics Wallet</td></tr>
+        <tr><td class="font-700">Payout</td><td class="text-muted">Manual, delayed</td><td class="text-green">Automatic, instant</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <div class="callout-quote">"I've been burned twice by Super Bowl squares where the organiser never paid out. I just don't do them anymore."</div>
+    <div class="callout-source">  r/sportsbook &nbsp;·&nbsp; 14.2k upvotes</div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: OPPORTUNITY ==================== -->
+<div id="screen-opportunity" class="screen">
+  <div class="screen-title">The Market Opportunity</div>
+  <div class="screen-subtitle">16.3M Americans are estimated to participate in Squares betting per Super Bowl. Let's bring them into the Fanatics ecosystem.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px;">
+    <div class="card" style="padding:20px;border-left:3px solid var(--red);">
+      <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;">Viral Customer Acquisition</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;">Every game created is an acquisition funnel. Players must sign up to claim squares   a single Super Bowl party generates up to 19 new Fanatics accounts, driven by social obligation not ad spend.</div>
+    </div>
+    <div class="card" style="padding:20px;border-left:3px solid var(--blue);">
+      <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;">Leverages Existing Infrastructure</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;">Fanatics Wallet, identity, and account management already exist. Squares requires no new payment rails, no new KYC flow, no new licensing. The marginal engineering cost is the grid.</div>
+    </div>
+    <div class="card" style="padding:20px;border-left:3px solid var(--green);">
+      <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;">Cross-Sell Pipeline into Prediction Markets</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;">Winners have Wallet credit and a reason to keep playing. Squares becomes the low-friction entry point that converts casual fans into active prediction market participants   the highest-value cohort on the platform.</div>
+    </div>
+  </div>
+
+  <div class="grid-3 mb-24">
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--red);">$23.1B</div>
+      <div class="stat-label">Estimated Super Bowl wagering in 2026<br><span style="color:var(--muted);font-size:10px;">AGA 2026 estimate</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--blue);">68M</div>
+      <div class="stat-label">Americans wagering on the Super Bowl</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--yellow);">24%</div>
+      <div class="stat-label">Of Americans wagering do so via pools or squares   16.3M people<br><span style="color:var(--muted);font-size:10px;">AGA 2026</span></div>
+    </div>
+  </div>
+
+  <div class="card-label" style="padding-left:2px;margin-bottom:12px;">Revenue Potential   Market Capture Scenarios</div>
+  <div class="card" style="padding:0;margin-bottom:24px;overflow:hidden;">
+    <div style="padding:14px 20px;background:var(--elevated);border-bottom:1px solid var(--border);font-size:11px;color:var(--muted);">
+      Addressable pool: <strong style="color:var(--text);">16.3M people</strong> (24% of 68M) &nbsp;·&nbsp; avg spend per player: <strong style="color:var(--text);">$50</strong> (5 squares × $10) &nbsp;·&nbsp; commission: <strong style="color:var(--text);">10%</strong>
+    </div>
+    <table style="width:100%;">
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Market Capture</th>
+          <th>Squares Players</th>
+          <th>Est. Wagering Volume</th>
+          <th>Commission Revenue (10%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="font-700" style="color:var(--muted);">Conservative</td>
+          <td>1% of 16.3M</td>
+          <td>~163K players</td>
+          <td>$8.2M</td>
+          <td style="color:var(--green);font-weight:700;">$820K</td>
+        </tr>
+        <tr style="background:rgba(224,31,61,0.04);">
+          <td class="font-700">Base Case</td>
+          <td>3% of 16.3M</td>
+          <td>~490K players</td>
+          <td>$24.5M</td>
+          <td style="color:var(--green);font-weight:700;">$2.45M</td>
+        </tr>
+        <tr>
+          <td class="font-700" style="color:var(--muted);">Optimistic</td>
+          <td>5% of 16.3M</td>
+          <td>~816K players</td>
+          <td>$40.8M</td>
+          <td style="color:var(--green);font-weight:700;">$4.1M</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-label" style="padding-left:2px;">Additional Revenue to be Captured</div>
+  <div class="market-map">
+    <div class="market-node">
+      <div class="market-node-dot" style="background:var(--red);"></div>
+      <h3>Net New Customers</h3>
+      <p>Players invited to a Squares game must create a Fanatics account to participate. Every party, every office pool becomes a paid acquisition channel   at zero CAC to Fanatics.</p>
+    </div>
+    <div class="market-node">
+      <div class="market-node-dot" style="background:var(--blue);"></div>
+      <h3>Deeper Ecosystem Engagement</h3>
+      <p>Existing customers return to the platform for a new reason. Wallet top-ups, repeat game creation, and seasonal re-engagement all increase interaction frequency and lifetime value.</p>
+    </div>
+    <div class="market-node">
+      <div class="market-node-dot" style="background:var(--yellow);"></div>
+      <h3>Attach Rate into Other Products</h3>
+      <p>Squares acts as a gateway. Measuring what % of Squares players move into prediction markets, merchandise, or ticketing tells us the true downstream value of the feature   and informs where to invest next.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="text-sm lh text-muted">Super Bowl Squares is the entry point. March Madness brackets, NBA Finals grids, and custom game formats extend this to a <strong style="color:var(--text);">year-round social wagering platform</strong>   all within Fanatics' existing regulatory framework. Every game creates a social graph. Every payout creates a habit. Every new user funds a Wallet.</p>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: DISCOVERY ==================== -->
+<div id="screen-discovery" class="screen">
+  <div class="screen-title">What We Found: Discovery Insights</div>
+  <div class="screen-subtitle">Discovery is underway and this is some rough findings so far</div>
+
+  <div class="discovery-grid">
+    <div class="discovery-col">
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);">User Pain Points</h3>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;">From Reddit r/sportsbook, r/nfl, Twitter/X</div>
+        <div class="pain-item">"The person running it always takes too big a cut   you never know if the split is real."</div>
+        <div class="pain-item">"We had a dispute about whether the numbers were really random. It killed the vibe."</div>
+        <div class="pain-item">"Someone bought 10 squares and then Venmoed the wrong person. Total chaos."</div>
+        <div class="pain-item">"I want to do one with my family in different states but it's impossible to manage remotely."</div>
+      </div>
+    </div>
+    <div class="discovery-col">
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);">Competitive Landscape</h3>
+        <table>
+          <thead><tr><th>Product</th><th>Strengths</th><th>Gap</th></tr></thead>
+          <tbody>
+            <tr><td class="font-700">SquaresWithFriends</td><td class="text-muted">Simple grid</td><td class="text-muted">No payments, no identity</td></tr>
+            <tr><td class="font-700">Yahoo Fantasy</td><td class="text-muted">Brand trust</td><td class="text-muted">No squares product</td></tr>
+            <tr><td class="font-700">Sleeper</td><td class="text-muted">Great UX</td><td class="text-muted">No real money</td></tr>
+            <tr><td class="font-700">DraftKings</td><td class="text-muted">Licensed</td><td class="text-muted">No social games</td></tr>
+            <tr style="background:rgba(224,31,61,0.06);"><td style="color:var(--red);font-weight:700;">Fanatics Markets</td><td style="color:var(--green);font-size:12px;">Licensed + Wallet + Fan identity</td><td style="color:var(--red);font-weight:700;font-size:12px;">Squares ← gap</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="discovery-col">
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);">Why Now</h3>
+        <div class="why-now-item"><div class="why-now-dot"></div><div class="why-now-text">PASPA repeal opened all 50 states to sports wagering regulation   the legal window is finally clear</div></div>
+        <div class="why-now-item"><div class="why-now-dot"></div><div class="why-now-text">Fanatics Wallet already licensed in 30+ states   infrastructure is ready, no new compliance lift</div></div>
+        <div class="why-now-item"><div class="why-now-dot"></div><div class="why-now-text">Super Bowl 2027 in LA   record viewership projected, largest addressable moment in a decade</div></div>
+        <div class="why-now-item"><div class="why-now-dot"></div><div class="why-now-text">Social features are the next frontier post-commoditisation of odds   DraftKings and FanDuel have no answer here</div></div>
+        <div class="why-now-item"><div class="why-now-dot"></div><div class="why-now-text">Gen Z bettors prefer social formats over solo wagering   and Fanatics' fan identity moat is unmatched</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: COMMERCIAL ==================== -->
+<div id="screen-commercial" class="screen">
+  <div class="screen-title">How Fanatics makes money</div>
+  <div class="screen-subtitle">Three revenue streams, zero new infrastructure required</div>
+
+  <div class="primary-revenue">
+    <div class="primary-revenue-label">Primary Revenue Stream</div>
+    <h2>Commission</h2>
+    <p class="text-sm lh text-muted">10% taken from total pot before payout distribution. Automatically deducted   no organiser involvement, no disputes.</p>
+    <div class="revenue-example">
+      100 squares × $10 = $1,000 pot &nbsp;→&nbsp; $100 commission &nbsp;→&nbsp; $900 distributed<br>
+      Base case: 490K players × $50 avg spend × 10% commission = <span class="revenue-highlight">$2.45M Super Bowl commission</span>
+    </div>
+  </div>
+
+  <div class="grid-2 mb-24">
+    <div class="card">
+      <div class="primary-revenue-label" style="color:var(--blue);">Secondary Revenue Stream</div>
+      <h3 class="mb-8" style="font-size:15px;font-weight:700;">Wallet Deposits</h3>
+      <p class="text-sm lh text-muted">Every new Squares player needs a Fanatics Wallet to participate. That is a direct, low-friction path to getting new users funded and active inside the platform.</p>
+    </div>
+    <div class="card">
+      <div class="primary-revenue-label" style="color:var(--yellow);">Tertiary Revenue Stream</div>
+      <h3 class="mb-8" style="font-size:15px;font-weight:700;">Attach Rate into Other Fanatics Platforms</h3>
+      <p class="text-sm lh text-muted">Once someone is in the ecosystem, where do they go next? Squares players become candidates for prediction markets, collectibles, memorabilia, and ticketing. Measuring attach rate tells us the true downstream value of the feature and informs where to invest next.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Prize Split Model   Worked Example (100 squares × $10)</div>
+    <div class="grid-2" style="gap:24px;align-items:start;">
+      <div>
+        <div class="prize-grid">
+          <div class="prize-cell">
+            <div class="prize-cell-label">Q1</div>
+            <div class="prize-cell-pct">15%</div>
+            <div class="prize-cell-amt">$135</div>
+          </div>
+          <div class="prize-cell">
+            <div class="prize-cell-label">Q2 (Half)</div>
+            <div class="prize-cell-pct">25%</div>
+            <div class="prize-cell-amt">$225</div>
+          </div>
+          <div class="prize-cell">
+            <div class="prize-cell-label">Q3</div>
+            <div class="prize-cell-pct">15%</div>
+            <div class="prize-cell-amt">$135</div>
+          </div>
+          <div class="prize-cell" style="border-color:var(--green);">
+            <div class="prize-cell-label">Final</div>
+            <div class="prize-cell-pct" style="color:var(--green);">45%</div>
+            <div class="prize-cell-amt">$405</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="summary-row"><span class="summary-label">Total pot (100 × $10)</span><span class="summary-value">$1,000</span></div>
+        <div class="summary-row"><span class="summary-label">Commission (10%)</span><span class="summary-value red">−$100</span></div>
+        <div class="summary-divider"></div>
+        <div class="summary-row"><span class="summary-label">Distributable pot</span><span class="summary-value">$900</span></div>
+        <div class="summary-row"><span class="summary-label">Q1 winner</span><span class="summary-value green">$135</span></div>
+        <div class="summary-row"><span class="summary-label">Q2 winner (halftime)</span><span class="summary-value green">$225</span></div>
+        <div class="summary-row"><span class="summary-label">Q3 winner</span><span class="summary-value green">$135</span></div>
+        <div class="summary-row"><span class="summary-label">Final score winner</span><span class="summary-value green">$405</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: APPLICATIONS ==================== -->
+<div id="screen-applications" class="screen">
+  <div class="screen-title">Beyond the Super Bowl</div>
+  <div class="screen-subtitle">Once the gamification model is proven, we expand.</div>
+
+  <div class="card mb-24">
+    <div class="card-label">Product Roadmap</div>
+    <div class="roadmap">
+      <div class="roadmap-phase">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-phase-label">Phase 1</div>
+        <div class="roadmap-phase-date" style="color:var(--red);font-size:11px;font-weight:600;">Feb 2027</div>
+        <h3>Super Bowl Squares</h3>
+        <p>Validate mechanic, commission model, Wallet integration. Target: 50,000 games, 500,000 players.</p>
+      </div>
+      <div class="roadmap-phase future">
+        <div class="roadmap-dot future"></div>
+        <div class="roadmap-phase-label">Phase 2</div>
+        <div class="roadmap-phase-date" style="font-size:11px;font-weight:600;color:var(--muted);">Mar 2027</div>
+        <h3>March Madness Grid</h3>
+        <p>Adapt grid for tournament bracket outcomes. Target: 200,000 games.</p>
+      </div>
+      <div class="roadmap-phase future">
+        <div class="roadmap-dot future"></div>
+        <div class="roadmap-phase-label">Phase 3</div>
+        <div class="roadmap-phase-date" style="font-size:11px;font-weight:600;color:var(--muted);">Sep 2027</div>
+        <h3>NFL Season Pass</h3>
+        <p>Weekly squares every NFL game. Subscription organiser tier ($4.99/month unlimited games). Target: 1M monthly organisers.</p>
+      </div>
+      <div class="roadmap-phase future">
+        <div class="roadmap-dot future"></div>
+        <div class="roadmap-phase-label">Phase 4</div>
+        <div class="roadmap-phase-date" style="font-size:11px;font-weight:600;color:var(--muted);">2028</div>
+        <h3>Fantasy League Integration</h3>
+        <p>Squares embedded inside fantasy football leagues. League commissioners can run squares alongside their draft   one platform for the full season of social wagering.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-label" style="padding-left:2px;">Sport Coverage Expansion</div>
+  <div class="sport-cards">
+    <div class="sport-card"><div class="sport-icon">🏈</div><div><h4>NFL</h4><p>Weekly squares all season long</p></div></div>
+    <div class="sport-card"><div class="sport-icon">🏀</div><div><h4>NBA</h4><p>Finals grid, playoff bracket pools</p></div></div>
+    <div class="sport-card"><div class="sport-icon">⚾</div><div><h4>MLB</h4><p>World Series squares format</p></div></div>
+    <div class="sport-card"><div class="sport-icon">🎮</div><div><h4>Esports</h4><p>Tournament grids   LoL, CS2, Valorant, Dota 2</p></div></div>
+    <div class="sport-card"><div class="sport-icon">⚽</div><div><h4>Soccer</h4><p>World Cup, Champions League</p></div></div>
+    <div class="sport-card"><div class="sport-icon">🏒</div><div><h4>NHL</h4><p>Stanley Cup grid format</p></div></div>
+    <div class="sport-card"><div class="sport-icon">🥇</div><div><h4>Olympics</h4><p>Medal table grid   country vs. sport, every two years</p></div></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: METRICS ==================== -->
+<div id="screen-metrics" class="screen">
+  <div class="screen-title">How We'll Know It's Working</div>
+  <div class="screen-subtitle">North Star, guardrails, and phase-gate criteria</div>
+
+  <div class="north-star mb-24">
+    <div class="north-star-label">North Star Metric</div>
+    <h2>New Accounts Created and Interacted</h2>
+    <p>The primary goal of Squares is acquisition and ecosystem activation. A new account that creates or joins a game, purchases a square, and receives a payout represents the full product value loop   and a customer now inside the Fanatics ecosystem.</p>
+  </div>
+
+  <div class="grid-4 mb-24">
+    <div class="metric-tier">
+      <h3 style="color:var(--blue);">New Customer Acquisition</h3>
+      <div class="metric-row"><span class="metric-name">New accounts created</span><span class="metric-target">per event</span></div>
+      <div class="metric-row"><span class="metric-name">New Wallet activations</span><span class="metric-target">per event</span></div>
+      <div class="metric-row"><span class="metric-name">Games set up for event</span><span class="metric-target">per event</span></div>
+    </div>
+    <div class="metric-tier">
+      <h3 style="color:var(--yellow);">Existing Customer Interaction</h3>
+      <div class="metric-row"><span class="metric-name">Existing users playing</span><span class="metric-target">per event</span></div>
+      <div class="metric-row"><span class="metric-name">Squares fill rate</span><span class="metric-target">target 90%+</span></div>
+      <div class="metric-row"><span class="metric-name">Games completed end-to-end</span><span class="metric-target">per event</span></div>
+    </div>
+    <div class="metric-tier">
+      <h3 style="color:var(--green);">Revenue</h3>
+      <div class="metric-row"><span class="metric-name">Total commission collected</span><span class="metric-target">per event</span></div>
+      <div class="metric-row"><span class="metric-name">Wallet deposits triggered</span><span class="metric-target">per event</span></div>
+      <div class="metric-row"><span class="metric-name">Attach rate to other products</span><span class="metric-target">90 days post</span></div>
+    </div>
+    <div class="metric-tier">
+      <h3 style="color:var(--red);">Guardrails</h3>
+      <div class="metric-row"><span class="metric-name">Dispute rate</span><span class="metric-target" style="color:var(--red);">&lt;0.5%</span></div>
+      <div class="metric-row"><span class="metric-name">Payout failures</span><span class="metric-target" style="color:var(--red);">0</span></div>
+      <div class="metric-row"><span class="metric-name">Fraud / bad actors</span><span class="metric-target" style="color:var(--red);">By design: 0</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Risk Register</div>
+    <div class="grid-2" style="gap:16px;">
+      <div>
+        <div class="flex-between mb-8">
+          <span class="font-bold text-sm">Regulatory Risk</span>
+          <span class="pill pill-yellow">Medium</span>
+        </div>
+        <p class="text-sm lh text-muted">Some states may classify this as gambling requiring additional licensing. <strong style="color:var(--text);">Mitigation:</strong> Legal review per state, soft launch in permissive states first (Nevada, NJ, PA). Engage counsel pre-launch.</p>
+      </div>
+      <div>
+        <div class="flex-between mb-8">
+          <span class="font-bold text-sm">Adoption Risk</span>
+          <span class="pill pill-yellow">Medium</span>
+        </div>
+        <p class="text-sm lh text-muted">Organisers prefer existing tools (Excel, WhatsApp). <strong style="color:var(--text);">Mitigation:</strong> Zero-friction import from existing spreadsheet formats. Push notifications to existing Fanatics app users week before Super Bowl.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: COST TO DELIVER ==================== -->
+<div id="screen-cost" class="screen">
+  <div class="screen-title">Cost to Deliver</div>
+  <div class="screen-subtitle">Engineering, operational, and compliance costs to bring Squares to market.</div>
+  <div class="card" style="margin-top:8px;padding:48px 32px;text-align:center;">
+    <div style="font-size:36px;margin-bottom:16px;">🧮</div>
+    <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;">Work in progress</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.6;max-width:420px;margin:0 auto;">Cost modelling for engineering effort, legal review, and ongoing ops is underway. Check back soon.</div>
+    <div style="margin-top:20px;"><span class="pill pill-yellow">In Progress</span></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: CREATE GAME ==================== -->
+<div id="screen-create" class="screen">
+  <div class="breadcrumb">Squares › <span>Create New Game</span></div>
+  <div class="screen-title">Set Up Your Squares Game</div>
+  <div class="screen-subtitle">The host of the game can set the rules in 60 seconds</div>
+
+  <div class="create-layout">
+    <div>
+      <div class="card">
+        <div class="form-group">
+          <label class="form-label">Game Name</label>
+          <input class="form-input" type="text" placeholder="e.g. Super Bowl Party 2027">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teams</label>
+          <div class="team-row">
+            <div style="position:relative;">
+              <input id="cg-team1" class="form-input" type="text" placeholder="Home team" style="padding-left:28px;" oninput="updateTeamNames()">
+              <span class="team-dot" style="background:#004c54;position:absolute;left:10px;top:50%;transform:translateY(-50%);"></span>
+            </div>
+            <div class="team-vs">vs</div>
+            <div style="position:relative;">
+              <input id="cg-team2" class="form-input" type="text" placeholder="Away team" style="padding-left:28px;" oninput="updateTeamNames()">
+              <span class="team-dot" style="background:#e31837;position:absolute;left:10px;top:50%;transform:translateY(-50%);"></span>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Price Per Square</label>
+            <select id="cg-price" class="form-input form-select" onchange="updateGameSummary()">
+              <option value="">Select price...</option>
+              <option value="5">$5</option>
+              <option value="10">$10</option>
+              <option value="25">$25</option>
+              <option value="50">$50</option>
+              <option value="100">$100</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Max Squares Per Player</label>
+            <input class="form-input" type="number" placeholder="e.g. 10" min="1" max="100">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prize Split (%)</label>
+          <div class="split-row">
+            <div class="split-input-group">
+              <div class="split-label">Q1</div>
+              <input id="cg-q1" class="split-input" type="number" value="15" min="0" max="100" onchange="updateGameSummary()">
+            </div>
+            <div class="split-input-group">
+              <div class="split-label">Q2 (Half)</div>
+              <input id="cg-q2" class="split-input" type="number" value="25" min="0" max="100" onchange="updateGameSummary()">
+            </div>
+            <div class="split-input-group">
+              <div class="split-label">Q3</div>
+              <input id="cg-q3" class="split-input" type="number" value="15" min="0" max="100" onchange="updateGameSummary()">
+            </div>
+            <div class="split-input-group">
+              <div class="split-label">Final</div>
+              <input id="cg-final" class="split-input" type="number" value="45" min="0" max="100" onchange="updateGameSummary()">
+            </div>
+          </div>
+        </div>
+        <div class="form-group mb-0">
+          <label class="form-label">Total Pot (when all 100 squares fill)</label>
+          <div id="cg-pot-display" style="font-size:28px;font-weight:800;color:var(--green);">$0</div>
+          <div id="cg-pot-label" style="font-size:12px;color:var(--muted);margin-top:4px;">Select a price per square to calculate</div>
+        </div>
+      </div>
+      <button class="btn btn-red mt-16" style="width:100%;padding:14px;" onclick="showScreen('lobby',document.querySelector('.sidebar-item:nth-child(9)'))">Create Game &amp; Get Share Link →</button>
+    </div>
+
+    <div>
+      <div class="card" style="position:sticky;top:80px;">
+        <div class="card-label">Game Summary</div>
+        <div class="summary-row"><span class="summary-label">Squares</span><span class="summary-value">100</span></div>
+        <div class="summary-row"><span class="summary-label">Price per square</span><span id="cg-s-price" class="summary-value">$0</span></div>
+        <div class="summary-row"><span class="summary-label">Total pot</span><span id="cg-s-pot" class="summary-value">$0</span></div>
+        <div class="summary-row"><span class="summary-label">Commission (10%)</span><span id="cg-s-rake" class="summary-value red">$0</span></div>
+        <div class="summary-divider"></div>
+        <div class="summary-row"><span class="summary-label font-bold" style="color:var(--text);">Distributable pot</span><span id="cg-s-dist" class="summary-value" style="font-size:16px;">$0</span></div>
+        <div class="section-divider" style="margin:12px 0;"></div>
+        <div class="summary-row"><span class="summary-label">Q1 winner</span><span id="cg-s-q1" class="summary-value green">$0</span></div>
+        <div class="summary-row"><span class="summary-label">Q2 winner (halftime)</span><span id="cg-s-q2" class="summary-value green">$0</span></div>
+        <div class="summary-row"><span class="summary-label">Q3 winner</span><span id="cg-s-q3" class="summary-value green">$0</span></div>
+        <div class="summary-row"><span class="summary-label">Final score winner</span><span id="cg-s-final" class="summary-value green">$0</span></div>
+        <div class="section-divider" style="margin:12px 0;"></div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Numbers 0-9 randomly assigned to each axis after all 100 squares are claimed. Every player notified instantly.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: LOBBY ==================== -->
+<div id="screen-lobby" class="screen">
+  <div class="breadcrumb">Squares › <span>Vishak's Super Bowl LXI Party</span></div>
+  <div class="screen-title">Game Lobby</div>
+
+  <div class="status-bar">
+    <div class="status-bar-item"><strong>100</strong> / 100 squares claimed</div>
+    <div class="status-bar-divider"></div>
+    <div class="status-bar-item"><strong style="color:var(--green);">$1,000</strong> raised</div>
+    <div class="status-bar-divider"></div>
+    <div class="status-bar-item" style="color:var(--green);font-weight:700;">Ready to draw numbers</div>
+    <div class="status-bar-divider"></div>
+    <div style="flex:1;"><div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;"><div style="height:100%;width:100%;background:var(--green);border-radius:3px;"></div></div></div>
+    <div class="status-bar-item" style="font-size:12px;color:var(--green);">100%</div>
+  </div>
+
+  <div class="grid-2" style="gap:20px;margin-bottom:20px;align-items:start;">
+    <div class="invite-section">
+      <div class="card-label">Invite Players</div>
+      <div class="invite-row">
+        <div class="share-link">fanatics.com/squares/vishak-sb61-4f2x9</div>
+        <button class="btn btn-outline btn-sm">Copy Link</button>
+        <button class="btn btn-red btn-sm">Invite via Fanatics</button>
+      </div>
+      <div class="card-label mt-12">Players</div>
+      <div class="friends-list">
+        <div class="friend-row"><div class="friend-avatar" style="background:rgba(59,130,246,0.15);color:#3b82f6;">RW</div><div class="friend-name">Russel Wilson</div><div class="friend-squares">10 squares</div><span class="pill pill-green">Joined ✓</span></div>
+        <div class="friend-row"><div class="friend-avatar" style="background:rgba(0,194,122,0.15);color:#00c27a;">ML</div><div class="friend-name">Marshawn Lynch</div><div class="friend-squares">10 squares</div><span class="pill pill-green">Joined ✓</span></div>
+        <div class="friend-row"><div class="friend-avatar" style="background:rgba(168,85,247,0.15);color:#a855f7;">KB</div><div class="friend-name">Kobe Bryant</div><div class="friend-squares">10 squares</div><span class="pill pill-green">Joined ✓</span></div>
+        <div class="friend-row"><div class="friend-avatar" style="background:rgba(249,115,22,0.15);color:#f97316;">GP</div><div class="friend-name">Gary Payton</div><div class="friend-squares">10 squares</div><span class="pill pill-green">Joined ✓</span></div>
+        <div class="friend-row"><div class="friend-avatar" style="background:rgba(6,182,212,0.15);color:#06b6d4;">TB</div><div class="friend-name">Tom Brady</div><div class="friend-squares">10 squares</div><span class="pill pill-green">Joined ✓</span></div>
+        <div class="friend-row"><div class="friend-avatar" style="background:rgba(220,38,38,0.15);color:#dc2626;">RA</div><div class="friend-name">Ray Allen</div><div class="friend-squares">10 squares</div><span class="pill pill-green">Joined ✓</span></div>
+        <div class="friend-row"><div class="friend-avatar" style="background:rgba(245,166,35,0.15);color:#f5a623;">LS</div><div class="friend-name">Louis Sutton</div><div class="friend-squares">10 squares</div><span class="pill pill-green">Joined ✓</span></div>
+        <div class="friend-row"><div class="friend-avatar" style="background:rgba(236,72,153,0.15);color:#ec4899;">SK</div><div class="friend-name">Shawn Kemp</div><div class="friend-squares">10 squares</div><span class="pill pill-green">Joined ✓</span></div>
+        <div class="friend-row"><div class="friend-avatar" style="background:rgba(132,204,22,0.15);color:#84cc16;">LB</div><div class="friend-name">Larry Bird</div><div class="friend-squares">10 squares</div><span class="pill pill-green">Joined ✓</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="card mb-16">
+        <div class="card-label">Players</div>
+        <div class="player-chips">
+          <div class="player-chip"><div class="player-chip-avatar" style="background:rgba(224,31,61,0.2);color:#e01f3d;">VS</div><span class="player-chip-name">You</span><span class="player-chip-count">10 sq</span></div>
+          <div class="player-chip"><div class="player-chip-avatar" style="background:rgba(59,130,246,0.2);color:#3b82f6;">RW</div><span class="player-chip-name">Russel W.</span><span class="player-chip-count">10 sq</span></div>
+          <div class="player-chip"><div class="player-chip-avatar" style="background:rgba(0,194,122,0.2);color:#00c27a;">ML</div><span class="player-chip-name">Marshawn L.</span><span class="player-chip-count">10 sq</span></div>
+          <div class="player-chip"><div class="player-chip-avatar" style="background:rgba(168,85,247,0.2);color:#a855f7;">KB</div><span class="player-chip-name">Kobe B.</span><span class="player-chip-count">10 sq</span></div>
+          <div class="player-chip"><div class="player-chip-avatar" style="background:rgba(249,115,22,0.2);color:#f97316;">GP</div><span class="player-chip-name">Gary P.</span><span class="player-chip-count">10 sq</span></div>
+          <div class="player-chip"><div class="player-chip-avatar" style="background:rgba(6,182,212,0.2);color:#06b6d4;">TB</div><span class="player-chip-name">Tom B.</span><span class="player-chip-count">10 sq</span></div>
+          <div class="player-chip"><div class="player-chip-avatar" style="background:rgba(220,38,38,0.2);color:#dc2626;">RA</div><span class="player-chip-name">Ray A.</span><span class="player-chip-count">10 sq</span></div>
+          <div class="player-chip"><div class="player-chip-avatar" style="background:rgba(245,166,35,0.2);color:#f5a623;">LS</div><span class="player-chip-name">Louis S.</span><span class="player-chip-count">10 sq</span></div>
+          <div class="player-chip"><div class="player-chip-avatar" style="background:rgba(236,72,153,0.2);color:#ec4899;">SK</div><span class="player-chip-name">Shawn K.</span><span class="player-chip-count">10 sq</span></div>
+          <div class="player-chip"><div class="player-chip-avatar" style="background:rgba(132,204,22,0.2);color:#84cc16;">LB</div><span class="player-chip-name">Larry B.</span><span class="player-chip-count">10 sq</span></div>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-box" style="background:rgba(0,194,122,0.18);border:1px solid rgba(0,194,122,0.3);"></div>Claimed</div>
+        <div class="legend-item"><div class="legend-box" style="background:var(--elevated);border:1px solid var(--border);"></div>Available</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;text-align:center;margin-bottom:4px;"><span class="dyn-team2">Away Team</span> →</div>
+  <div id="lobby-grid"></div>
+</div>
+
+<!-- ==================== SCREEN: BUY SQUARES ==================== -->
+<div id="screen-buy" class="screen">
+  <div class="breadcrumb">Squares › Vishak's Super Bowl LXI Party › <span>Buy Squares</span></div>
+  <div class="screen-title">Pick Your Squares</div>
+
+  <div class="status-bar">
+    <div class="status-bar-item"><strong>10</strong> squares available</div>
+    <div class="status-bar-divider"></div>
+    <div class="status-bar-item"><strong>$10</strong> each</div>
+    <div class="status-bar-divider"></div>
+    <div class="status-bar-item">Max <strong>10</strong> squares per player</div>
+    <div class="status-bar-divider"></div>
+    <div class="status-bar-item text-muted">Click empty squares to select</div>
+  </div>
+
+  <div class="buy-layout">
+    <div>
+      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;text-align:center;margin-bottom:4px;"><span class="dyn-team2">Away Team</span> →</div>
+      <div id="buy-grid"></div>
+    </div>
+    <div class="buy-panel">
+      <h3>Your Selection</h3>
+      <div id="buy-selected-count" style="font-size:28px;font-weight:800;color:var(--blue);margin-bottom:4px;">3 squares selected</div>
+      <div id="buy-hint" style="font-size:12px;color:var(--muted);margin-bottom:16px;">Click squares to add or remove</div>
+      <div class="buy-detail-row"><span class="buy-detail-label">Price per square</span><span class="buy-detail-value">$10</span></div>
+      <div class="buy-detail-row" id="buy-total-row"><span class="buy-detail-label">Total</span><span class="buy-detail-value" style="color:var(--green);">$30</span></div>
+      <div class="buy-detail-row"><span class="buy-detail-label">From</span><span class="buy-detail-value">Fanatics Wallet</span></div>
+      <div class="buy-detail-row"><span class="buy-detail-label">Balance</span><span class="buy-detail-value">$247.50</span></div>
+      <div class="buy-detail-row" id="buy-after-row"><span class="buy-detail-label">After purchase</span><span class="buy-detail-value text-muted">$217.50</span></div>
+      <button class="btn btn-red mt-16" style="width:100%;padding:12px;" id="buy-confirm-btn">Confirm Purchase</button>
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;">Charged from Fanatics Wallet instantly</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: LOCK & DRAW ==================== -->
+<div id="screen-draw" class="screen">
+  <div class="breadcrumb">Squares › Vishak's Super Bowl LXI Party › <span>Lock &amp; Draw</span></div>
+  <div class="screen-title">Lock &amp; Draw Numbers</div>
+
+  <div class="success-banner">
+    <span style="font-size:18px;">🎉</span>
+    <span class="success-banner-text">All 100 squares sold! $1,000 pot locked. Time to draw numbers.</span>
+  </div>
+
+  <div class="draw-card mb-20">
+    <h2>Draw Numbers</h2>
+    <p>Numbers 0–9 will be randomly assigned to each team's axis. Once drawn, every player's winning conditions are locked in. The draw is cryptographically random   no one, including the organiser, can influence the outcome.</p>
+    <div id="draw-state-container">
+      <div id="draw-pre" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-red" style="padding:14px 32px;font-size:15px;" onclick="revealNumbers()">🔀 Draw Numbers Now</button>
+      </div>
+      <div id="draw-post" style="display:none;">
+        <div style="background:rgba(0,194,122,0.1);border:1px solid rgba(0,194,122,0.3);border-radius:var(--radius);padding:16px;margin-top:16px;display:flex;align-items:center;gap:12px;justify-content:center;">
+          <span style="font-size:20px;">✅</span>
+          <span style="font-size:15px;font-weight:700;color:var(--green);">Numbers drawn and locked! All 12 players notified.</span>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;">
+          <button class="btn btn-outline">Notify All Players</button>
+          <button class="btn btn-red" onclick="showScreen('live',document.querySelector('.sidebar-item:nth-child(12)'))">Go to Live Scoring →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="draw-grid-reveal" style="display:none;">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;text-align:center;margin-bottom:4px;"><span class="dyn-team2">Away Team</span> →</div>
+    <div id="draw-grid"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: LIVE SCORING ==================== -->
+<div id="screen-live" class="screen">
+  <div class="breadcrumb">Squares › Vishak's Super Bowl LXI Party › <span>Live Scoring</span></div>
+  <div class="screen-title">Live Scoring   Super Bowl LXI</div>
+  <div class="screen-subtitle"><span class="dyn-team1">Home Team</span> vs. <span class="dyn-team2">Away Team</span> &nbsp;·&nbsp; Feb 8, 2027</div>
+
+  <div class="score-entry">
+    <div class="score-team" style="color:#004c54;">🏈 <span class="dyn-team1">Home Team</span></div>
+    <input class="score-input" type="number" id="score-eagles" value="17" style="color:#004c54;">
+    <div class="score-separator"> </div>
+    <input class="score-input" type="number" id="score-chiefs" value="14" style="color:#e31837;">
+    <div class="score-team" style="color:#e31837;"><span class="dyn-team2">Away Team</span> 🏈</div>
+    <button class="btn btn-outline btn-sm" onclick="updateScore()">Update Score</button>
+    <div id="score-updated" style="font-size:13px;color:var(--green);display:none;">✓ Score updated</div>
+  </div>
+
+  <div class="quarter-cards">
+    <div class="quarter-card done">
+      <h4>Q1 ✅</h4>
+      <div class="quarter-score"><span class="dyn-team1">Home</span> 7 - <span class="dyn-team2">Away</span> 3</div>
+      <div class="quarter-digits">Last digits: <strong>7</strong> vs <strong>3</strong></div>
+      <div class="quarter-winner">Winner: Kobe Bryant</div>
+      <div style="font-size:13px;font-weight:700;color:var(--green);margin-top:4px;">+$135 to Wallet</div>
+    </div>
+    <div class="quarter-card done">
+      <h4>Q2 ✅ (Halftime)</h4>
+      <div class="quarter-score"><span class="dyn-team1">Home</span> 14 - <span class="dyn-team2">Away</span> 10</div>
+      <div class="quarter-digits">Last digits: <strong>4</strong> vs <strong>0</strong></div>
+      <div class="quarter-winner">Winner: Marshawn Lynch</div>
+      <div style="font-size:13px;font-weight:700;color:var(--green);margin-top:4px;">+$225 to Wallet</div>
+    </div>
+    <div class="quarter-card live">
+      <h4><span class="live-dot"></span>Q3 LIVE</h4>
+      <div class="quarter-score"><span class="dyn-team1">Home</span> 17 - <span class="dyn-team2">Away</span> 14</div>
+      <div class="quarter-digits">Last digits: <strong>7</strong> vs <strong>4</strong></div>
+      <div class="quarter-winner live">⚡ Tom Brady could win!</div>
+      <div style="font-size:13px;font-weight:700;color:var(--yellow);margin-top:4px;">$135 on the line</div>
+    </div>
+    <div class="quarter-card">
+      <h4>Final ⏳</h4>
+      <div class="quarter-score" style="color:var(--muted);">Pending</div>
+      <div class="quarter-digits" style="color:var(--muted);">Score in progress</div>
+      <div class="quarter-winner" style="color:var(--muted);">Winner TBD</div>
+      <div style="font-size:13px;font-weight:700;color:var(--muted);margin-top:4px;">$405 on the line</div>
+    </div>
+  </div>
+
+  <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;text-align:center;margin-bottom:4px;"><span class="dyn-team2">Away Team</span> →</div>
+  <div id="live-grid"></div>
+</div>
+
+<!-- ==================== SCREEN: PAYOUTS ==================== -->
+<div id="screen-payouts" class="screen">
+  <div class="breadcrumb">Squares › Vishak's Super Bowl LXI Party › <span>Payouts</span></div>
+  <div class="screen-title">Game Complete   Payouts Sent</div>
+  <div class="screen-subtitle">All 4 quarters settled &nbsp;·&nbsp; $900 distributed &nbsp;·&nbsp; Fanatics Wallet credited</div>
+
+  <div class="payout-cards">
+    <div class="payout-card">
+      <div class="payout-card-q">Q1 - Final digits 7 | 3</div>
+      <div class="payout-card-name">Kobe Bryant</div>
+      <div class="payout-card-amount">+$135</div>
+      <div style="font-size:12px;color:var(--green);">Credited to Wallet ✅</div>
+    </div>
+    <div class="payout-card">
+      <div class="payout-card-q">Q2 Halftime - Final digits 4 | 0</div>
+      <div class="payout-card-name">Marshawn Lynch</div>
+      <div class="payout-card-amount">+$225</div>
+      <div style="font-size:12px;color:var(--green);">Credited to Wallet ✅</div>
+    </div>
+    <div class="payout-card">
+      <div class="payout-card-q">Q3 - Final digits 7 | 4</div>
+      <div class="payout-card-name">Tom Brady</div>
+      <div class="payout-card-amount">+$135</div>
+      <div style="font-size:12px;color:var(--green);">Credited to Wallet ✅</div>
+    </div>
+    <div class="payout-card" style="border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.06);">
+      <div class="payout-card-q">Final Score - Final digits 4 | 7</div>
+      <div class="payout-card-name">Vishak Shankar</div>
+      <div class="payout-card-amount">+$405</div>
+      <div style="font-size:12px;color:var(--green);">Credited to Wallet ✅</div>
+      <div class="payout-card-you mt-4">That's you! 🎉</div>
+    </div>
+  </div>
+
+  <div class="payout-summary">
+    <div class="card-label">Game Summary</div>
+    <div class="grid-2">
+      <div>
+        <div class="summary-row"><span class="summary-label">Game</span><span class="summary-value" style="font-size:12px;">Vishak's Super Bowl LXI Party</span></div>
+        <div class="summary-row"><span class="summary-label">Total pot</span><span class="summary-value">$1,000</span></div>
+        <div class="summary-row"><span class="summary-label">Players</span><span class="summary-value">12</span></div>
+      </div>
+      <div>
+        <div class="summary-row"><span class="summary-label">Squares sold</span><span class="summary-value">100 / 100</span></div>
+        <div class="summary-row"><span class="summary-label">Date</span><span class="summary-value">Feb 8, 2027</span></div>
+        <div class="summary-row"><span class="summary-label">Status</span><span class="summary-value text-green">Complete ✅</span></div>
+      </div>
+    </div>
+    <div class="commission-note">Commission collected: $100 &nbsp;·&nbsp; $900 distributed to players</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-red" onclick="showScreen('create',document.querySelector('.sidebar-item:nth-child(8)'))">Create New Game</button>
+    <button class="btn btn-outline">View in Portfolio</button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ============================================================
+// GRID DATA
+// ============================================================
+const CHIEFS_NUMS = [7,3,0,4,8,1,6,2,9,5];
+const EAGLES_NUMS = [4,0,7,3,9,2,8,6,1,5];
+
+// All 10 players
+const PLAYERS = [
+  {init:'VS', name:'Vishak Shankar',  short:'Vishak S.',   bg:'rgba(224,31,61,0.18)',   color:'#e01f3d'},
+  {init:'RW', name:'Russel Wilson',   short:'Russel W.',   bg:'rgba(59,130,246,0.18)',  color:'#3b82f6'},
+  {init:'ML', name:'Marshawn Lynch',  short:'Marshawn L.', bg:'rgba(0,194,122,0.18)',   color:'#00c27a'},
+  {init:'KB', name:'Kobe Bryant',     short:'Kobe B.',     bg:'rgba(168,85,247,0.18)', color:'#a855f7'},
+  {init:'GP', name:'Gary Payton',     short:'Gary P.',     bg:'rgba(249,115,22,0.18)', color:'#f97316'},
+  {init:'TB', name:'Tom Brady',       short:'Tom B.',      bg:'rgba(6,182,212,0.18)',   color:'#06b6d4'},
+  {init:'RA', name:'Ray Allen',       short:'Ray A.',      bg:'rgba(220,38,38,0.18)',   color:'#dc2626'},
+  {init:'LS', name:'Louis Sutton',    short:'Louis S.',    bg:'rgba(245,166,35,0.18)', color:'#f5a623'},
+  {init:'SK', name:'Shawn Kemp',      short:'Shawn K.',    bg:'rgba(236,72,153,0.18)', color:'#ec4899'},
+  {init:'LB', name:'Larry Bird',      short:'Larry B.',    bg:'rgba(132,204,22,0.18)', color:'#84cc16'},
+];
+
+// Latin square rotation: player at cell idx = PLAYERS[(row + col) % 10]
+// Each player owns exactly 10 squares, one per row and one per column
+function playerAt(idx) {
+  return PLAYERS[(Math.floor(idx / 10) + idx % 10) % 10];
+}
+
+// VS squares: cells where (row+col)%10 === 0
+const VS_SQUARES = new Set([0,19,28,37,46,55,64,73,82,91]);
+
+// All 100 squares claimed (lobby / draw / live)
+const CLAIMED_ALL = new Set(Array.from({length:100}, (_, i) => i));
+
+// 90 squares claimed by others on buy screen
+const CLAIMED_BUY = new Set(Array.from({length:100}, (_, i) => i).filter(i => !VS_SQUARES.has(i)));
+
+// Eagles axis: [4,0,7,3,9,2,8,6,1,5]  Chiefs axis: [7,3,0,4,8,1,6,2,9,5]
+// Q1:    Eagles 7 (row 2) Chiefs 3 (col 1) → idx 21 → Kobe Bryant
+// Q2:    Eagles 4 (row 0) Chiefs 0 (col 2) → idx  2 → Marshawn Lynch
+// Q3:    Eagles 7 (row 2) Chiefs 4 (col 3) → idx 23 → Tom Brady  [LIVE]
+// Final: Eagles 4 (row 0) Chiefs 7 (col 0) → idx  0 → Vishak Shankar
+const WIN_Q1_IDX = 21;
+const WIN_Q2_IDX = 2;
+const WIN_Q3_IDX = 23;
+const WIN_FINAL_IDX = 0;
+
+// Dynamic team names — updated from Create Game form
+let team1Name = 'Home Team';
+let team2Name = 'Away Team';
+
+function updateTeamNames() {
+  team1Name = document.getElementById('cg-team1').value.trim() || 'Home Team';
+  team2Name = document.getElementById('cg-team2').value.trim() || 'Away Team';
+  document.querySelectorAll('.dyn-team1').forEach(el => el.textContent = team1Name);
+  document.querySelectorAll('.dyn-team2').forEach(el => el.textContent = team2Name);
+}
+
+// Buy screen: pre-select 3 of VS's available squares
+let buySelected = new Set([19, 28, 46]);
+
+// Draw screen state
+let numbersDrawn = false;
+
+// ============================================================
+// NAV TABS
+// ============================================================
+function setNavTab(el, name) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ============================================================
+// SIDEBAR + SCREEN SWITCHING
+// ============================================================
+function updateGameSummary() {
+  const price = parseFloat(document.getElementById('cg-price').value) || 0;
+  const q1 = parseFloat(document.getElementById('cg-q1').value) || 0;
+  const q2 = parseFloat(document.getElementById('cg-q2').value) || 0;
+  const q3 = parseFloat(document.getElementById('cg-q3').value) || 0;
+  const fin = parseFloat(document.getElementById('cg-final').value) || 0;
+
+  const pot = price * 100;
+  const rake = pot * 0.10;
+  const dist = pot - rake;
+
+  const fmt = v => v > 0 ? '$' + v.toLocaleString('en', {minimumFractionDigits: 0, maximumFractionDigits: 0}) : '$0';
+
+  document.getElementById('cg-pot-display').textContent = fmt(pot);
+  document.getElementById('cg-pot-label').textContent = price > 0 ? `100 squares x $${price} per square` : 'Select a price per square to calculate';
+  document.getElementById('cg-s-price').textContent = price > 0 ? `$${price}` : '$0';
+  document.getElementById('cg-s-pot').textContent = fmt(pot);
+  document.getElementById('cg-s-rake').textContent = '-' + fmt(rake);
+  document.getElementById('cg-s-dist').textContent = fmt(dist);
+  document.getElementById('cg-s-q1').textContent = fmt(dist * q1 / 100);
+  document.getElementById('cg-s-q2').textContent = fmt(dist * q2 / 100);
+  document.getElementById('cg-s-q3').textContent = fmt(dist * q3 / 100);
+  document.getElementById('cg-s-final').textContent = fmt(dist * fin / 100);
+}
+
+function showScreen(name, sidebarEl) {
+  // Hide all screens
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  // Show target
+  const target = document.getElementById('screen-' + name);
+  if (target) target.classList.add('active');
+  // Update sidebar active
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  if (sidebarEl) sidebarEl.classList.add('active');
+  // Render grids on demand
+  if (name === 'lobby') renderLobbyGrid();
+  if (name === 'buy') renderBuyGrid();
+  if (name === 'draw' && numbersDrawn) renderDrawGrid();
+  if (name === 'live') renderLiveGrid();
+}
+
+// ============================================================
+// BUILD ROW-HEADER COLUMN LABEL
+// ============================================================
+function makeTeam1Label() {
+  const div = document.createElement('div');
+  div.style.cssText = 'writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);font-size:10px;font-weight:700;color:#004c54;letter-spacing:0.08em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;';
+  div.textContent = '← ' + team1Name.toUpperCase();
+  return div;
+}
+
+// ============================================================
+// GRID BUILDER UTILITY
+// ============================================================
+function buildGrid(options) {
+  // options: { colNums, rowNums, cellRenderer, showNums, wrapId }
+  const {colNums, rowNums, cellRenderer, showNums} = options;
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;gap:4px;align-items:flex-start;';
+
+  // Team 1 vertical label (Home team axis)
+  const eaglesLabel = document.createElement('div');
+  eaglesLabel.style.cssText = 'writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);font-size:9px;font-weight:700;color:#004c54;letter-spacing:0.08em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;width:18px;align-self:center;';
+  eaglesLabel.textContent = '← ' + team1Name.toUpperCase();
+  wrap.appendChild(eaglesLabel);
+
+  const gridWrap = document.createElement('div');
+  gridWrap.style.cssText = 'display:inline-block;';
+
+  // Header row
+  const headerRow = document.createElement('div');
+  headerRow.style.cssText = 'display:flex;';
+  const corner = document.createElement('div');
+  corner.style.cssText = 'width:52px;height:52px;flex-shrink:0;';
+  headerRow.appendChild(corner);
+  for (let c = 0; c < 10; c++) {
+    const hc = document.createElement('div');
+    hc.style.cssText = 'width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:' + (showNums ? '16px' : '18px') + ';font-weight:800;background:#1c1f27;border:1px solid #2a2d37;color:' + (showNums ? '#f0f2f5' : '#7a8094') + ';';
+    hc.textContent = showNums ? colNums[c] : '?';
+    headerRow.appendChild(hc);
+  }
+  gridWrap.appendChild(headerRow);
+
+  // Data rows
+  for (let r = 0; r < 10; r++) {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;';
+    const rh = document.createElement('div');
+    rh.style.cssText = 'width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:' + (showNums ? '16px' : '18px') + ';font-weight:800;background:#1c1f27;border:1px solid #2a2d37;color:' + (showNums ? '#f0f2f5' : '#7a8094') + ';';
+    rh.textContent = showNums ? rowNums[r] : '?';
+    row.appendChild(rh);
+    for (let c = 0; c < 10; c++) {
+      const idx = r * 10 + c;
+      const cell = cellRenderer(r, c, idx);
+      row.appendChild(cell);
+    }
+    gridWrap.appendChild(row);
+  }
+  wrap.appendChild(gridWrap);
+  return wrap;
+}
+
+// ============================================================
+// LOBBY GRID
+// ============================================================
+function renderLobbyGrid() {
+  const container = document.getElementById('lobby-grid');
+  container.innerHTML = '';
+  const grid = buildGrid({
+    colNums: CHIEFS_NUMS, rowNums: EAGLES_NUMS, showNums: false,
+    cellRenderer: (r, c, idx) => {
+      const cell = document.createElement('div');
+      cell.style.cssText = 'width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:1px solid #2a2d37;transition:all 0.1s;';
+      const p = playerAt(idx);
+      cell.style.background = p.bg;
+      cell.style.color = p.color;
+      cell.style.borderColor = p.color.replace(')',',0.25)').replace('rgb','rgba');
+      cell.textContent = p.init;
+      return cell;
+    }
+  });
+  container.appendChild(grid);
+}
+
+// ============================================================
+// BUY GRID
+// ============================================================
+function renderBuyGrid() {
+  const container = document.getElementById('buy-grid');
+  container.innerHTML = '';
+  const grid = buildGrid({
+    colNums: CHIEFS_NUMS, rowNums: EAGLES_NUMS, showNums: false,
+    cellRenderer: (r, c, idx) => {
+      const cell = document.createElement('div');
+      cell.style.cssText = 'width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:1px solid #2a2d37;transition:all 0.1s;position:relative;';
+      if (CLAIMED_BUY.has(idx)) {
+        const p = playerAt(idx);
+        cell.style.background = p.bg;
+        cell.style.color = p.color;
+        cell.textContent = p.init;
+        cell.style.cursor = 'default';
+      } else if (buySelected.has(idx)) {
+        cell.style.background = 'rgba(59,130,246,0.2)';
+        cell.style.borderColor = '#3b82f6';
+        cell.style.color = '#3b82f6';
+        cell.style.cursor = 'pointer';
+        cell.textContent = '$10';
+        cell.onclick = () => toggleBuyCell(idx, cell);
+      } else {
+        cell.style.background = '#1c1f27';
+        cell.style.color = '#7a8094';
+        cell.style.cursor = 'pointer';
+        // tooltip
+        const tip = document.createElement('div');
+        tip.textContent = '$10';
+        tip.style.cssText = 'display:none;position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#000;color:#fff;font-size:10px;padding:3px 6px;border-radius:3px;white-space:nowrap;z-index:10;pointer-events:none;';
+        cell.appendChild(tip);
+        cell.onmouseenter = () => { tip.style.display = 'block'; cell.style.background = 'rgba(59,130,246,0.1)'; };
+        cell.onmouseleave = () => { tip.style.display = 'none'; if(!buySelected.has(idx)) cell.style.background = '#1c1f27'; };
+        cell.onclick = () => toggleBuyCell(idx, cell);
+      }
+      return cell;
+    }
+  });
+  container.appendChild(grid);
+  updateBuyPanel();
+}
+
+function toggleBuyCell(idx, cell) {
+  if (buySelected.has(idx)) {
+    buySelected.delete(idx);
+    cell.style.background = '#1c1f27';
+    cell.style.borderColor = '#2a2d37';
+    cell.style.color = '#7a8094';
+    cell.textContent = '';
+  } else {
+    if (buySelected.size >= 10) {
+      cell.style.borderColor = '#e01f3d';
+      setTimeout(() => { cell.style.borderColor = '#2a2d37'; }, 600);
+      return;
+    }
+    buySelected.add(idx);
+    cell.style.background = 'rgba(59,130,246,0.2)';
+    cell.style.borderColor = '#3b82f6';
+    cell.style.color = '#3b82f6';
+    cell.textContent = '$10';
+  }
+  updateBuyPanel();
+}
+
+function updateBuyPanel() {
+  const n = buySelected.size;
+  const total = n * 10;
+  const after = 247.50 - total;
+  document.getElementById('buy-selected-count').textContent = n + (n === 1 ? ' square selected' : ' squares selected');
+  document.getElementById('buy-total-row').querySelector('.buy-detail-value').textContent = '$' + total.toFixed(2);
+  document.getElementById('buy-after-row').querySelector('.buy-detail-value').textContent = '$' + after.toFixed(2);
+}
+
+// ============================================================
+// DRAW GRID
+// ============================================================
+function renderDrawGrid() {
+  const container = document.getElementById('draw-grid');
+  container.innerHTML = '';
+  const grid = buildGrid({
+    colNums: CHIEFS_NUMS, rowNums: EAGLES_NUMS, showNums: numbersDrawn,
+    cellRenderer: (r, c, idx) => {
+      const cell = document.createElement('div');
+      cell.style.cssText = 'width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:1px solid #2a2d37;';
+      const p = playerAt(idx);
+      cell.style.background = p.bg;
+      cell.style.color = p.color;
+      cell.textContent = numbersDrawn ? p.init + ' ' + EAGLES_NUMS[r] + '|' + CHIEFS_NUMS[c] : p.init;
+      cell.style.fontSize = numbersDrawn ? '9px' : '11px';
+      cell.style.textAlign = 'center';
+      cell.style.lineHeight = '1.3';
+      return cell;
+    }
+  });
+  container.appendChild(grid);
+}
+
+function revealNumbers() {
+  numbersDrawn = true;
+  document.getElementById('draw-pre').style.display = 'none';
+  document.getElementById('draw-post').style.display = 'block';
+  document.getElementById('draw-grid-reveal').style.display = 'block';
+  renderDrawGrid();
+}
+
+// ============================================================
+// LIVE GRID
+// ============================================================
+function renderLiveGrid() {
+  const container = document.getElementById('live-grid');
+  container.innerHTML = '';
+  const grid = buildGrid({
+    colNums: CHIEFS_NUMS, rowNums: EAGLES_NUMS, showNums: true,
+    cellRenderer: (r, c, idx) => {
+      const cell = document.createElement('div');
+      cell.style.cssText = 'width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:1px solid #2a2d37;transition:all 0.15s;';
+      if (idx === WIN_Q3_IDX) {
+        cell.style.background = 'rgba(245,166,35,0.2)';
+        cell.style.borderColor = '#f5a623';
+        cell.style.animation = 'pulseWin 1.5s ease-in-out infinite';
+        cell.style.color = '#f5a623';
+        cell.textContent = 'TB';
+        cell.title = 'Tom Brady - Q3 potential winner!';
+      } else if (idx === WIN_Q1_IDX) {
+        cell.style.background = 'rgba(0,194,122,0.18)';
+        cell.style.borderColor = 'rgba(0,194,122,0.4)';
+        cell.style.color = '#00c27a';
+        cell.textContent = 'KB';
+        cell.title = 'Kobe Bryant - Q1 winner';
+      } else if (idx === WIN_Q2_IDX) {
+        cell.style.background = 'rgba(0,194,122,0.18)';
+        cell.style.borderColor = 'rgba(0,194,122,0.4)';
+        cell.style.color = '#00c27a';
+        cell.textContent = 'ML';
+        cell.title = 'Marshawn Lynch - Q2 winner';
+      } else {
+        const p = playerAt(idx);
+        cell.style.background = p.bg;
+        cell.style.color = p.color;
+        cell.textContent = p.init;
+      }
+      return cell;
+    }
+  });
+  container.appendChild(grid);
+}
+
+// ============================================================
+// SCORE UPDATE
+// ============================================================
+function updateScore() {
+  const e = document.getElementById('score-eagles').value;
+  const c = document.getElementById('score-chiefs').value;
+  const msg = document.getElementById('score-updated');
+  msg.style.display = 'inline';
+  msg.textContent = '✓ Score updated: ' + team1Name + ' ' + e + ' – ' + team2Name + ' ' + c;
+  setTimeout(() => { msg.style.display = 'none'; }, 2500);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+// Wire up sidebar items by re-attaching onclick to ensure correct el reference
+document.addEventListener('DOMContentLoaded', () => {
+  renderLobbyGrid();
+  // Set first sidebar item (problem) as active
+  const items = document.querySelectorAll('.sidebar-item');
+  // Already set in HTML
+});
+
+// Initial render for lobby
+renderLobbyGrid();
+</script>
+</body>
+</html>
