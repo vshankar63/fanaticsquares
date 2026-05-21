@@ -995,11 +995,10 @@ tr:last-child td{border-bottom:none;}
     <div class="score-separator"> </div>
     <input class="score-input" type="number" id="score-chiefs" value="14" style="color:#e31837;">
     <div class="score-team" style="color:#e31837;"><span class="dyn-team2">Away Team</span> 🏈</div>
-    <button class="btn btn-outline btn-sm" onclick="updateScore()">Update Score</button>
-    <div id="score-updated" style="font-size:13px;color:var(--green);display:none;">✓ Score updated</div>
+    <button class="btn btn-red btn-sm" id="score-lock-btn" onclick="updateScore()">Lock in Q3 Score</button>
   </div>
 
-  <div class="quarter-cards">
+  <div class="quarter-cards" id="quarter-cards-container">
     <div class="quarter-card done">
       <h4>Q1 ✅</h4>
       <div class="quarter-score"><span class="dyn-team1">Home</span> 7 - <span class="dyn-team2">Away</span> 3</div>
@@ -1014,14 +1013,14 @@ tr:last-child td{border-bottom:none;}
       <div class="quarter-winner">Winner: Marshawn Lynch</div>
       <div style="font-size:13px;font-weight:700;color:var(--green);margin-top:4px;">+$225 to Wallet</div>
     </div>
-    <div class="quarter-card live">
+    <div class="quarter-card live" id="q3-card">
       <h4><span class="live-dot"></span>Q3 LIVE</h4>
       <div class="quarter-score"><span class="dyn-team1">Home</span> 17 - <span class="dyn-team2">Away</span> 14</div>
       <div class="quarter-digits">Last digits: <strong>7</strong> vs <strong>4</strong></div>
       <div class="quarter-winner live">⚡ Tom Brady could win!</div>
       <div style="font-size:13px;font-weight:700;color:var(--yellow);margin-top:4px;">$135 on the line</div>
     </div>
-    <div class="quarter-card">
+    <div class="quarter-card" id="final-card">
       <h4>Final ⏳</h4>
       <div class="quarter-score" style="color:var(--muted);">Pending</div>
       <div class="quarter-digits" style="color:var(--muted);">Score in progress</div>
@@ -1158,6 +1157,9 @@ let buyLocked = false;
 // Draw screen state
 let numbersDrawn = false;
 
+// Live scoring state: 'q3' → 'final' → ('ot' if tied) → 'done'
+let livePhase = 'q3';
+
 // ============================================================
 // NAV TABS
 // ============================================================
@@ -1207,7 +1209,7 @@ function showScreen(name, sidebarEl) {
   if (name === 'lobby') renderLobbyGrid();
   if (name === 'buy') renderBuyGrid();
   if (name === 'draw' && numbersDrawn) renderDrawGrid();
-  if (name === 'live') renderLiveGrid();
+  if (name === 'live') { resetLiveScoring(); renderLiveGrid(); }
 }
 
 // ============================================================
@@ -1454,13 +1456,140 @@ function renderLiveGrid() {
 // ============================================================
 // SCORE UPDATE
 // ============================================================
+function findWinner(s1, s2) {
+  const d1 = s1 % 10;
+  const d2 = s2 % 10;
+  const row = EAGLES_NUMS.indexOf(d1);
+  const col = CHIEFS_NUMS.indexOf(d2);
+  return { player: playerAt(row * 10 + col), d1, d2 };
+}
+
 function updateScore() {
-  const e = document.getElementById('score-eagles').value;
-  const c = document.getElementById('score-chiefs').value;
-  const msg = document.getElementById('score-updated');
-  msg.style.display = 'inline';
-  msg.textContent = '✓ Score updated: ' + team1Name + ' ' + e + ' – ' + team2Name + ' ' + c;
-  setTimeout(() => { msg.style.display = 'none'; }, 2500);
+  const s1 = parseInt(document.getElementById('score-eagles').value) || 0;
+  const s2 = parseInt(document.getElementById('score-chiefs').value) || 0;
+  const btn = document.getElementById('score-lock-btn');
+
+  if (livePhase === 'q3') {
+    const { player, d1, d2 } = findWinner(s1, s2);
+    const card = document.getElementById('q3-card');
+    card.className = 'quarter-card done';
+    card.innerHTML =
+      '<h4>Q3 ✅</h4>' +
+      '<div class="quarter-score">' + team1Name + ' ' + s1 + ' - ' + team2Name + ' ' + s2 + '</div>' +
+      '<div class="quarter-digits">Last digits: <strong>' + d1 + '</strong> vs <strong>' + d2 + '</strong></div>' +
+      '<div class="quarter-winner">Winner: ' + player.name + '</div>' +
+      '<div style="font-size:13px;font-weight:700;color:var(--green);margin-top:4px;">+$135 to Wallet</div>';
+
+    // Final card goes live
+    const finalCard = document.getElementById('final-card');
+    finalCard.className = 'quarter-card live';
+    finalCard.innerHTML =
+      '<h4><span class="live-dot"></span>Final LIVE</h4>' +
+      '<div class="quarter-score" style="color:var(--muted);">Update score above</div>' +
+      '<div class="quarter-digits" style="color:var(--muted);">Awaiting final whistle</div>' +
+      '<div class="quarter-winner live">$405 on the line</div>';
+
+    livePhase = 'final';
+    btn.textContent = 'Lock in Final Score';
+
+  } else if (livePhase === 'final') {
+    if (s1 === s2) {
+      // Tied game → overtime
+      const finalCard = document.getElementById('final-card');
+      finalCard.className = 'quarter-card done';
+      finalCard.innerHTML =
+        '<h4>Final ⏳ (Tied)</h4>' +
+        '<div class="quarter-score">' + team1Name + ' ' + s1 + ' - ' + team2Name + ' ' + s2 + '</div>' +
+        '<div class="quarter-digits" style="color:var(--yellow);">Game tied — going to OT</div>' +
+        '<div class="quarter-winner" style="color:var(--yellow);">Winner carries to OT</div>';
+
+      // Add OT card
+      const otCard = document.createElement('div');
+      otCard.className = 'quarter-card live';
+      otCard.id = 'ot-card';
+      otCard.innerHTML =
+        '<h4><span class="live-dot"></span>OT LIVE</h4>' +
+        '<div class="quarter-score" style="color:var(--muted);">Update score above</div>' +
+        '<div class="quarter-digits" style="color:var(--muted);">Sudden death</div>' +
+        '<div class="quarter-winner live">$405 on the line</div>';
+      document.getElementById('quarter-cards-container').appendChild(otCard);
+
+      livePhase = 'ot';
+      btn.textContent = 'Lock in OT Score';
+
+    } else {
+      const { player, d1, d2 } = findWinner(s1, s2);
+      const finalCard = document.getElementById('final-card');
+      finalCard.className = 'quarter-card done';
+      finalCard.innerHTML =
+        '<h4>Final ✅</h4>' +
+        '<div class="quarter-score">' + team1Name + ' ' + s1 + ' - ' + team2Name + ' ' + s2 + '</div>' +
+        '<div class="quarter-digits">Last digits: <strong>' + d1 + '</strong> vs <strong>' + d2 + '</strong></div>' +
+        '<div class="quarter-winner">Winner: ' + player.name + '</div>' +
+        '<div style="font-size:13px;font-weight:700;color:var(--green);margin-top:4px;">+$405 to Wallet</div>';
+
+      livePhase = 'done';
+      btn.textContent = 'Game Complete ✅';
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+    }
+
+  } else if (livePhase === 'ot') {
+    if (s1 === s2) {
+      // Still tied — another OT (edge case, just show another period)
+      const otCard = document.getElementById('ot-card');
+      if (otCard) { otCard.querySelector('h4').textContent = 'OT ⏳ (Tied again)'; }
+      return;
+    }
+    const { player, d1, d2 } = findWinner(s1, s2);
+    const otCard = document.getElementById('ot-card');
+    if (otCard) {
+      otCard.className = 'quarter-card done';
+      otCard.innerHTML =
+        '<h4>OT ✅</h4>' +
+        '<div class="quarter-score">' + team1Name + ' ' + s1 + ' - ' + team2Name + ' ' + s2 + '</div>' +
+        '<div class="quarter-digits">Last digits: <strong>' + d1 + '</strong> vs <strong>' + d2 + '</strong></div>' +
+        '<div class="quarter-winner">Winner: ' + player.name + '</div>' +
+        '<div style="font-size:13px;font-weight:700;color:var(--green);margin-top:4px;">+$405 to Wallet</div>';
+    }
+    livePhase = 'done';
+    btn.textContent = 'Game Complete ✅';
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+  }
+}
+
+// ============================================================
+// LIVE SCORING RESET (called on each navigation to live screen)
+// ============================================================
+function resetLiveScoring() {
+  livePhase = 'q3';
+  // Restore Q3 to live state
+  const q3 = document.getElementById('q3-card');
+  q3.className = 'quarter-card live';
+  q3.innerHTML =
+    '<h4><span class="live-dot"></span>Q3 LIVE</h4>' +
+    '<div class="quarter-score"><span class="dyn-team1">' + team1Name + '</span> 17 - <span class="dyn-team2">' + team2Name + '</span> 14</div>' +
+    '<div class="quarter-digits">Last digits: <strong>7</strong> vs <strong>4</strong></div>' +
+    '<div class="quarter-winner live">⚡ Update score above and lock in to reveal winner</div>' +
+    '<div style="font-size:13px;font-weight:700;color:var(--yellow);margin-top:4px;">$135 on the line</div>';
+  // Restore Final to pending
+  const fin = document.getElementById('final-card');
+  fin.className = 'quarter-card';
+  fin.innerHTML =
+    '<h4>Final ⏳</h4>' +
+    '<div class="quarter-score" style="color:var(--muted);">Pending</div>' +
+    '<div class="quarter-digits" style="color:var(--muted);">Score in progress</div>' +
+    '<div class="quarter-winner" style="color:var(--muted);">Winner TBD</div>' +
+    '<div style="font-size:13px;font-weight:700;color:var(--muted);margin-top:4px;">$405 on the line</div>';
+  // Remove any OT card
+  const ot = document.getElementById('ot-card');
+  if (ot) ot.remove();
+  // Reset button
+  const btn = document.getElementById('score-lock-btn');
+  btn.textContent = 'Lock in Q3 Score';
+  btn.disabled = false;
+  btn.style.opacity = '1';
 }
 
 // ============================================================
