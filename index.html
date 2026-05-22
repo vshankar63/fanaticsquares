@@ -1029,6 +1029,10 @@ tr:last-child td{border-bottom:none;}
     </div>
   </div>
 
+  <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px;font-size:12px;color:#7aa8f5;display:flex;align-items:center;gap:8px;">
+    <span style="font-size:14px;">💡</span>
+    <span>Each square wins when the <strong>last digit</strong> of both scores matches its row and column. Hover any square to see its winning score combination.</span>
+  </div>
   <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;text-align:center;margin-bottom:4px;"><span class="dyn-team2">Away Team</span> →</div>
   <div id="live-grid"></div>
 </div>
@@ -1036,36 +1040,10 @@ tr:last-child td{border-bottom:none;}
 <!-- ==================== SCREEN: PAYOUTS ==================== -->
 <div id="screen-payouts" class="screen">
   <div class="breadcrumb">Squares › Vishak's Super Bowl LXI Party › <span>Payouts</span></div>
-  <div class="screen-title">Game Complete   Payouts Sent</div>
-  <div class="screen-subtitle">All 4 quarters settled &nbsp;·&nbsp; $900 distributed &nbsp;·&nbsp; Fanatics Wallet credited</div>
+  <div id="payout-screen-title" class="screen-title">Payouts</div>
+  <div id="payout-screen-subtitle" class="screen-subtitle">Lock in scores on the Live Scoring screen to see payouts here</div>
 
-  <div class="payout-cards">
-    <div class="payout-card">
-      <div class="payout-card-q">Q1 - Final digits 7 | 3</div>
-      <div class="payout-card-name">Kobe Bryant</div>
-      <div class="payout-card-amount">+$135</div>
-      <div style="font-size:12px;color:var(--green);">Credited to Wallet ✅</div>
-    </div>
-    <div class="payout-card">
-      <div class="payout-card-q">Q2 Halftime - Final digits 4 | 0</div>
-      <div class="payout-card-name">Marshawn Lynch</div>
-      <div class="payout-card-amount">+$225</div>
-      <div style="font-size:12px;color:var(--green);">Credited to Wallet ✅</div>
-    </div>
-    <div class="payout-card">
-      <div class="payout-card-q">Q3 - Final digits 7 | 4</div>
-      <div class="payout-card-name">Tom Brady</div>
-      <div class="payout-card-amount">+$135</div>
-      <div style="font-size:12px;color:var(--green);">Credited to Wallet ✅</div>
-    </div>
-    <div class="payout-card" style="border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.06);">
-      <div class="payout-card-q">Final Score - Final digits 4 | 7</div>
-      <div class="payout-card-name">Vishak Shankar</div>
-      <div class="payout-card-amount">+$405</div>
-      <div style="font-size:12px;color:var(--green);">Credited to Wallet ✅</div>
-      <div class="payout-card-you mt-4">That's you! 🎉</div>
-    </div>
-  </div>
+  <div id="payout-cards-container" class="payout-cards"></div>
 
   <div class="payout-summary">
     <div class="card-label">Game Summary</div>
@@ -1073,12 +1051,12 @@ tr:last-child td{border-bottom:none;}
       <div>
         <div class="summary-row"><span class="summary-label">Game</span><span class="summary-value" style="font-size:12px;">Vishak's Super Bowl LXI Party</span></div>
         <div class="summary-row"><span class="summary-label">Total pot</span><span class="summary-value">$1,000</span></div>
-        <div class="summary-row"><span class="summary-label">Players</span><span class="summary-value">12</span></div>
+        <div class="summary-row"><span class="summary-label">Players</span><span class="summary-value">10</span></div>
       </div>
       <div>
         <div class="summary-row"><span class="summary-label">Squares sold</span><span class="summary-value">100 / 100</span></div>
         <div class="summary-row"><span class="summary-label">Date</span><span class="summary-value">Feb 8, 2027</span></div>
-        <div class="summary-row"><span class="summary-label">Status</span><span class="summary-value text-green">Complete ✅</span></div>
+        <div class="summary-row"><span class="summary-label">Status</span><span id="payout-status-cell" class="summary-value text-muted">In Progress</span></div>
       </div>
     </div>
     <div class="commission-note">Commission collected: $100 &nbsp;·&nbsp; $900 distributed to players</div>
@@ -1160,6 +1138,14 @@ let numbersDrawn = false;
 // Live scoring state: 'q3' → 'final' → ('ot' if tied) → 'done'
 let livePhase = 'q3';
 
+// Winners locked in during live scoring — drives payouts page
+const lockedWinners = {
+  q1: { name: 'Kobe Bryant',    init: 'KB', idx: WIN_Q1_IDX, d1: 7, d2: 3, prize: 135, label: 'Q1',          s1: 7,  s2: 3  },
+  q2: { name: 'Marshawn Lynch', init: 'ML', idx: WIN_Q2_IDX, d1: 4, d2: 0, prize: 225, label: 'Q2 Halftime', s1: 14, s2: 10 },
+  q3:    null,
+  final: null
+};
+
 // ============================================================
 // NAV TABS
 // ============================================================
@@ -1210,6 +1196,7 @@ function showScreen(name, sidebarEl) {
   if (name === 'buy') renderBuyGrid();
   if (name === 'draw' && numbersDrawn) renderDrawGrid();
   if (name === 'live') { resetLiveScoring(); renderLiveGrid(); }
+  if (name === 'payouts') renderPayouts();
 }
 
 // ============================================================
@@ -1417,32 +1404,46 @@ function revealNumbers() {
 function renderLiveGrid() {
   const container = document.getElementById('live-grid');
   container.innerHTML = '';
+  const q3Idx    = lockedWinners.q3    ? lockedWinners.q3.idx    : WIN_Q3_IDX;
+  const q3Done   = !!lockedWinners.q3;
+  const finalIdx = lockedWinners.final ? lockedWinners.final.idx : null;
   const grid = buildGrid({
     colNums: CHIEFS_NUMS, rowNums: EAGLES_NUMS, showNums: true,
     cellRenderer: (r, c, idx) => {
+      const p = playerAt(idx);
       const cell = document.createElement('div');
-      cell.style.cssText = 'width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:1px solid #2a2d37;transition:all 0.15s;';
-      if (idx === WIN_Q3_IDX) {
-        cell.style.background = 'rgba(245,166,35,0.2)';
-        cell.style.borderColor = '#f5a623';
-        cell.style.animation = 'pulseWin 1.5s ease-in-out infinite';
-        cell.style.color = '#f5a623';
-        cell.textContent = 'TB';
-        cell.title = 'Tom Brady - Q3 potential winner!';
-      } else if (idx === WIN_Q1_IDX) {
+      cell.style.cssText = 'width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:1px solid #2a2d37;transition:all 0.15s;cursor:default;';
+      // Tooltip on every cell
+      cell.title = (team1Name || 'Home') + ' ends in ' + EAGLES_NUMS[r] + '  |  ' + (team2Name || 'Away') + ' ends in ' + CHIEFS_NUMS[c] + '  →  ' + p.name;
+
+      if (idx === lockedWinners.q1.idx) {
         cell.style.background = 'rgba(0,194,122,0.18)';
         cell.style.borderColor = 'rgba(0,194,122,0.4)';
         cell.style.color = '#00c27a';
-        cell.textContent = 'KB';
-        cell.title = 'Kobe Bryant - Q1 winner';
-      } else if (idx === WIN_Q2_IDX) {
+        cell.textContent = lockedWinners.q1.init;
+      } else if (idx === lockedWinners.q2.idx) {
         cell.style.background = 'rgba(0,194,122,0.18)';
         cell.style.borderColor = 'rgba(0,194,122,0.4)';
         cell.style.color = '#00c27a';
-        cell.textContent = 'ML';
-        cell.title = 'Marshawn Lynch - Q2 winner';
+        cell.textContent = lockedWinners.q2.init;
+      } else if (finalIdx !== null && idx === finalIdx) {
+        cell.style.background = 'rgba(0,194,122,0.18)';
+        cell.style.borderColor = 'rgba(0,194,122,0.4)';
+        cell.style.color = '#00c27a';
+        cell.textContent = p.init;
+      } else if (idx === q3Idx) {
+        if (q3Done) {
+          cell.style.background = 'rgba(0,194,122,0.18)';
+          cell.style.borderColor = 'rgba(0,194,122,0.4)';
+          cell.style.color = '#00c27a';
+        } else {
+          cell.style.background = 'rgba(245,166,35,0.2)';
+          cell.style.borderColor = '#f5a623';
+          cell.style.animation = 'pulseWin 1.5s ease-in-out infinite';
+          cell.style.color = '#f5a623';
+        }
+        cell.textContent = p.init;
       } else {
-        const p = playerAt(idx);
         cell.style.background = p.bg;
         cell.style.color = p.color;
         cell.textContent = p.init;
@@ -1461,7 +1462,8 @@ function findWinner(s1, s2) {
   const d2 = s2 % 10;
   const row = EAGLES_NUMS.indexOf(d1);
   const col = CHIEFS_NUMS.indexOf(d2);
-  return { player: playerAt(row * 10 + col), d1, d2 };
+  const idx = row * 10 + col;
+  return { player: playerAt(idx), idx, d1, d2 };
 }
 
 function updateScore() {
@@ -1470,7 +1472,8 @@ function updateScore() {
   const btn = document.getElementById('score-lock-btn');
 
   if (livePhase === 'q3') {
-    const { player, d1, d2 } = findWinner(s1, s2);
+    const { player, idx, d1, d2 } = findWinner(s1, s2);
+    lockedWinners.q3 = { name: player.name, init: player.init, idx, d1, d2, prize: 135, label: 'Q3', s1, s2 };
     const card = document.getElementById('q3-card');
     card.className = 'quarter-card done';
     card.innerHTML =
@@ -1518,7 +1521,8 @@ function updateScore() {
       btn.textContent = 'Lock in OT Score';
 
     } else {
-      const { player, d1, d2 } = findWinner(s1, s2);
+      const { player, idx, d1, d2 } = findWinner(s1, s2);
+      lockedWinners.final = { name: player.name, init: player.init, idx, d1, d2, prize: 405, label: 'Final', s1, s2 };
       const finalCard = document.getElementById('final-card');
       finalCard.className = 'quarter-card done';
       finalCard.innerHTML =
@@ -1536,12 +1540,12 @@ function updateScore() {
 
   } else if (livePhase === 'ot') {
     if (s1 === s2) {
-      // Still tied — another OT (edge case, just show another period)
       const otCard = document.getElementById('ot-card');
       if (otCard) { otCard.querySelector('h4').textContent = 'OT ⏳ (Tied again)'; }
       return;
     }
-    const { player, d1, d2 } = findWinner(s1, s2);
+    const { player, idx, d1, d2 } = findWinner(s1, s2);
+    lockedWinners.final = { name: player.name, init: player.init, idx, d1, d2, prize: 405, label: 'OT', s1, s2 };
     const otCard = document.getElementById('ot-card');
     if (otCard) {
       otCard.className = 'quarter-card done';
@@ -1557,6 +1561,49 @@ function updateScore() {
     btn.disabled = true;
     btn.style.opacity = '0.5';
   }
+}
+
+// ============================================================
+// PAYOUTS RENDERER
+// ============================================================
+function renderPayouts() {
+  const q3done    = !!lockedWinners.q3;
+  const finalDone = !!lockedWinners.final;
+  const allDone   = q3done && finalDone;
+
+  document.getElementById('payout-screen-title').textContent    = allDone ? 'Game Complete — Payouts Sent' : 'Payouts';
+  document.getElementById('payout-screen-subtitle').textContent = allDone
+    ? 'All quarters settled · $900 distributed · Fanatics Wallet credited'
+    : 'Lock in scores on the Live Scoring screen to see payouts here';
+  document.getElementById('payout-status-cell').textContent  = allDone ? 'Complete ✅' : 'In Progress';
+  document.getElementById('payout-status-cell').className    = allDone ? 'summary-value text-green' : 'summary-value text-muted';
+
+  const container = document.getElementById('payout-cards-container');
+  container.innerHTML = '';
+
+  [lockedWinners.q1, lockedWinners.q2, lockedWinners.q3, lockedWinners.final].forEach(w => {
+    const card = document.createElement('div');
+    if (w) {
+      const isYou = w.name === 'Vishak Shankar';
+      card.className = 'payout-card';
+      if (isYou) { card.style.borderColor = 'rgba(245,166,35,0.4)'; card.style.background = 'rgba(245,166,35,0.06)'; }
+      card.innerHTML =
+        '<div class="payout-card-q">' + w.label + ' — last digits ' + w.d1 + ' | ' + w.d2 + '</div>' +
+        '<div class="payout-card-name">' + w.name + '</div>' +
+        '<div class="payout-card-amount">+$' + w.prize + '</div>' +
+        '<div style="font-size:12px;color:var(--green);">Credited to Wallet ✅</div>' +
+        (isYou ? '<div class="payout-card-you mt-4">That\'s you! 🎉</div>' : '');
+    } else {
+      card.className = 'payout-card';
+      card.style.opacity = '0.4';
+      const label = !q3done ? 'Q3' : 'Final';
+      card.innerHTML =
+        '<div class="payout-card-q">' + label + ' — pending</div>' +
+        '<div class="payout-card-name" style="color:var(--muted);">Not yet settled</div>' +
+        '<div class="payout-card-amount" style="color:var(--muted);">—</div>';
+    }
+    container.appendChild(card);
+  });
 }
 
 // ============================================================
@@ -1585,6 +1632,9 @@ function resetLiveScoring() {
   // Remove any OT card
   const ot = document.getElementById('ot-card');
   if (ot) ot.remove();
+  // Clear dynamic winners
+  lockedWinners.q3 = null;
+  lockedWinners.final = null;
   // Reset button
   const btn = document.getElementById('score-lock-btn');
   btn.textContent = 'Lock in Q3 Score';
